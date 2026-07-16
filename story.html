@@ -43,13 +43,8 @@
       margin: 18px auto 22px; font-weight: 600;
     }
     .book-cover .lede { max-width: 520px; color: var(--muted); font-size: 17px; }
-    .book-cover .strip {
-      margin: 44px auto 0; max-width: min(860px, 88vw);
-      border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
-      box-shadow: 0 18px 50px -28px rgba(28,24,20,.45);
-      background: #000;
-    }
-    .book-cover .strip img { width: 100%; display: block; }
+    .book-cover .cover-art { margin: 30px auto 0; max-width: min(640px, 90vw); }
+    .book-cover .cover-art img { width: 100%; display: block; }
     .scroll-hint {
       position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
       color: var(--faint); font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
@@ -61,14 +56,12 @@
 
     /* ---- Chapter pages (registers) ---- */
     .chapter {
-      min-height: 88vh; display: flex; flex-direction: column;
+      min-height: 76vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
       padding: 0 var(--pad-x);
     }
     .chapter .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 22px; }
-    .chapter .label { color: var(--faint); letter-spacing: .22em; text-transform: uppercase; font-size: 12px; margin-bottom: 12px; }
     .chapter h2 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 500; }
-    .chapter p.note { color: var(--muted); max-width: 460px; margin-top: 16px; font-size: 15.5px; }
 
     /* ---- Scenes ---- */
     .s-scene { height: 175vh; position: relative; }
@@ -77,36 +70,34 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: calc(var(--nav-h) + 26px) clamp(18px, 3.5vw, 48px) 30px;
     }
+    .s-eyebrow {
+      font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--crimson); font-weight: 500; text-align: center;
+      margin-bottom: clamp(14px, 2.2vh, 24px);
+      will-change: transform, opacity;
+    }
     .s-plate {
       max-width: 100%;
       display: flex; flex-direction: column; align-items: center;
       will-change: transform, opacity;
     }
-    .s-plate .frame {
-      background: #14110e; padding: clamp(8px, 1vw, 14px);
-      border-radius: 6px;
-      box-shadow: 0 30px 70px -34px rgba(28,24,20,.55);
-    }
     .s-plate img {
-      max-height: 66vh; max-width: min(1160px, 88vw);
-      width: auto; height: auto; display: block; border-radius: 2px;
+      max-height: 68vh; max-width: min(1160px, 88vw);
+      width: auto; height: auto; display: block;
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 62%, rgba(0,0,0,.55) 82%, transparent 97%);
+      mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 62%, rgba(0,0,0,.55) 82%, transparent 97%);
     }
     .s-caption {
-      margin-top: clamp(16px, 2.4vh, 28px); text-align: center; max-width: 620px;
+      margin-top: clamp(12px, 2vh, 22px); text-align: center; max-width: 620px;
       will-change: transform, opacity;
-    }
-    .s-caption .s-eyebrow {
-      font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
-      color: var(--crimson); font-weight: 500;
     }
     .s-caption .s-text {
       font-family: var(--font-display); font-style: italic; font-weight: 400;
       font-size: clamp(17px, 1.7vw, 21px); line-height: 1.55; color: var(--ink);
-      margin-top: 10px;
     }
     .s-caption .s-text.empty { display: none; }
     .s-caption .s-ctx {
-      display: inline-block; margin-top: 12px; font-size: 12.5px; color: var(--faint);
+      display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--faint);
       text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px;
     }
     .s-caption .s-ctx:hover { color: var(--crimson); border-color: var(--crimson); }
@@ -128,27 +119,43 @@
     }
     .colophon .ways a:hover { background: var(--crimson); border-color: var(--crimson); color: var(--on-crimson); }
 
-    /* ---- Chariot procession panel ---- */
-    .chariot-rail {
-      position: fixed; top: var(--nav-h); right: 0; bottom: 0; width: 232px; z-index: 30;
-      border-left: 1px solid var(--hairline);
-      background: linear-gradient(180deg, #f3efe6, #ece6d9);
-      display: none;
+    /* ---- Scene drawer (jump to any scene) ---- */
+    .drawer-tab {
+      position: fixed; left: 18px; top: calc(var(--nav-h) + 18px); z-index: 46;
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-body); font-size: 12px; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px;
+      cursor: pointer; transition: color .25s, border-color .25s;
     }
-    .chariot-rail canvas { display: block; width: 100%; height: 100%; }
-    .chariot-rail .rail-label {
-      position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
-      font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
-      color: var(--faint); pointer-events: none;
-      padding: 26px 8px 14px;
-      background: linear-gradient(180deg, rgba(236,230,217,0), rgba(236,230,217,.92) 55%);
+    .drawer-tab:hover { color: var(--crimson); border-color: var(--crimson); }
+    .drawer-tab .bars { display: inline-block; width: 14px; }
+    .drawer-tab .bars span { display: block; height: 1.5px; background: currentColor; margin: 3px 0; }
+    .scene-drawer {
+      position: fixed; left: 0; top: var(--nav-h); bottom: 0; width: 250px; z-index: 45;
+      background: var(--bg); border-right: 1px solid var(--line);
+      transform: translateX(-100%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+      overflow-y: auto; padding: 66px 14px 24px;
     }
-    .chariot-rail .rail-label strong { display: block; color: var(--muted); font-weight: 500; letter-spacing: .16em; }
-    @media (min-width: 1240px) {
-      .chariot-rail.on { display: block; }
-      .story-flow.railed { padding-right: 232px; }
-      .story-flow.railed .story-top { right: 232px; }
+    .scene-drawer.open { transform: none; }
+    .scene-drawer a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 7px 8px; border-radius: 8px; text-decoration: none;
+      color: var(--muted); font-size: 13.5px;
     }
+    .scene-drawer a:hover { background: var(--bg-raise); color: var(--ink); }
+    .scene-drawer a.current { color: var(--crimson); }
+    .scene-drawer a img {
+      width: 64px; height: 40px; object-fit: cover; border-radius: 4px; flex: none;
+      opacity: .92;
+    }
+    .scene-drawer .dv {
+      font-family: var(--font-display); font-size: 12px; color: var(--faint);
+      letter-spacing: .18em; text-transform: uppercase; margin: 16px 8px 6px;
+    }
+    @media (max-width: 640px) { .scene-drawer { width: 82vw; } }
   </style>
 </head>
 <body>
@@ -203,9 +210,9 @@
     <!-- Book cover -->
     <header class="book-cover" id="cover">
       <p class="eyebrow">Explore &middot; Story Mode</p>
-      <h1>The legend, scene by scene</h1>
-      <p class="lede">Three registers of cloth, twenty-three scenes, one story. Read it the way the painters meant it to be read: one episode at a time, left to right, top to bottom.</p>
-      <div class="strip"><img src="compare/pma-painting.jpg" alt="The full Bunga Dya painting"></div>
+      <h1>The painting, scene by scene</h1>
+      <p class="lede">Three registers, twenty-three scenes. Move through the painting one scene at a time, in the order it is read: left to right, top to bottom.</p>
+      <div class="cover-art"><img src="storyteller.svg" alt="An elder in Newari dress reading to children gathered around her"></div>
       <div class="scroll-hint"><span>Scroll to begin</span><span class="arr">&darr;</span></div>
     </header>
 
@@ -225,17 +232,12 @@
 
   </main>
 
-  <!-- Chariot procession rail -->
-  <aside class="chariot-rail" id="chariotRail" aria-hidden="true">
-    <canvas id="chariotCanvas"></canvas>
-    <p class="rail-label"><strong>The procession</strong>scroll, and the crowd pulls</p>
-  </aside>
+  <button class="drawer-tab" id="drawerTab" aria-expanded="false" aria-controls="sceneDrawer"><span class="bars"><span></span><span></span><span></span></span>Scenes</button>
+  <nav class="scene-drawer" id="sceneDrawer" aria-label="Jump to a scene"></nav>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="site.js"></script>
-  <script src="chariot.js"></script>
   <script>
     (function () {
       "use strict";
@@ -248,9 +250,9 @@
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const registers = {
-        "Row 1": { title: "Register One", h2: "The upper band of the cloth", note: "Crowned by inscription line one. The story begins here, read left to right." },
-        "Row 2": { title: "Register Two", h2: "The middle band", note: "Crowned by inscription line two. The journey continues." },
-        "Row 3": { title: "Register Three", h2: "The lower band", note: "Crowned by inscription line three — the line that dates the painting to Nepal Sambat 832, 1712 CE." }
+        "Row 1": { title: "Register One" },
+        "Row 2": { title: "Register Two" },
+        "Row 3": { title: "Register Three" }
       };
       const ordinals = ["one", "two", "three"];
 
@@ -275,9 +277,7 @@
               ch.className = "chapter";
               ch.innerHTML =
                 '<p class="orn">॥ ✽ ॥</p>' +
-                '<p class="label">' + registers[row].title + "</p>" +
-                '<h2>' + registers[row].h2 + "</h2>" +
-                '<p class="note">' + registers[row].note + "</p>";
+                '<h2>' + registers[row].title + "</h2>";
               frag.appendChild(ch);
             }
 
@@ -289,11 +289,11 @@
             const hasText = s.background && s.background.trim();
             sec.innerHTML =
               '<div class="s-hold">' +
+                '<p class="s-eyebrow">Scene ' + (i + 1) + " &middot; " + sectionLabel(s) + "</p>" +
                 '<div class="s-plate">' +
-                  '<div class="frame"><img ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async" src="' + s.image + '" alt="Scene ' + (i + 1) + " of the painting: " + sectionLabel(s) + '"></div>' +
+                  '<img ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async" src="' + s.image + '" alt="Scene ' + (i + 1) + " of the painting: " + sectionLabel(s) + '">' +
                 '</div>' +
                 '<div class="s-caption">' +
-                  '<p class="s-eyebrow">Scene ' + (i + 1) + " &middot; " + sectionLabel(s) + "</p>" +
                   '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
                   '<a class="s-ctx" href="explore.html#scene=' + s.id + '">View this scene in the full painting</a>' +
                 '</div>' +
@@ -302,6 +302,7 @@
           });
 
           mount.appendChild(frag);
+          buildDrawer(scenes);
           initScrolly(scenes.length);
 
           // Deep link: story.html#scene-N
@@ -320,6 +321,48 @@
             : "The scenes could not be loaded.";
           mount.appendChild(p);
         });
+
+      function buildDrawer(scenes) {
+        const drawer = document.getElementById("sceneDrawer");
+        const tab = document.getElementById("drawerTab");
+        const ords = { "Row 1": "Register One", "Row 2": "Register Two", "Row 3": "Register Three" };
+        let lastRow = "";
+        scenes.forEach((s, i) => {
+          const row = (s.section.match(/Row \d/) || [""])[0];
+          if (row && row !== lastRow) {
+            lastRow = row;
+            const dv = document.createElement("p");
+            dv.className = "dv";
+            dv.textContent = ords[row] || row;
+            drawer.appendChild(dv);
+          }
+          const a = document.createElement("a");
+          a.href = "#scene-" + (i + 1);
+          a.dataset.i = i;
+          a.innerHTML = '<img loading="lazy" src="scene-thumbs/' + s.id + '.jpg" alt=""><span>Scene ' + (i + 1) + "</span>";
+          a.addEventListener("click", () => {
+            drawer.classList.remove("open");
+            tab.setAttribute("aria-expanded", "false");
+          });
+          drawer.appendChild(a);
+        });
+        tab.addEventListener("click", () => {
+          const open = drawer.classList.toggle("open");
+          tab.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        document.addEventListener("keydown", e => {
+          if (e.key === "Escape" && drawer.classList.contains("open")) {
+            drawer.classList.remove("open");
+            tab.setAttribute("aria-expanded", "false");
+          }
+        });
+        document.addEventListener("click", e => {
+          if (drawer.classList.contains("open") && !drawer.contains(e.target) && !tab.contains(e.target)) {
+            drawer.classList.remove("open");
+            tab.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
 
       function initScrolly(total) {
         const sceneEls = Array.from(document.querySelectorAll(".s-scene"));
@@ -345,6 +388,9 @@
           } else {
             counter.classList.remove("show");
           }
+          document.querySelectorAll(".scene-drawer a").forEach(a => {
+            a.classList.toggle("current", +a.dataset.i === active);
+          });
         }
         addEventListener("scroll", onScroll, { passive: true });
         onScroll();
@@ -367,8 +413,9 @@
           gsap.registerPlugin(ScrollTrigger);
           sceneEls.forEach(el => {
             const plate = el.querySelector(".s-plate");
+            const eyebrow = el.querySelector(".s-eyebrow");
             const cap = el.querySelector(".s-caption");
-            gsap.fromTo(plate, { autoAlpha: 0, y: 90, scale: 0.96 },
+            gsap.fromTo([eyebrow, plate], { autoAlpha: 0, y: 90, scale: 0.97 },
               { autoAlpha: 1, y: 0, scale: 1, ease: "none",
                 scrollTrigger: { trigger: el, start: "top 85%", end: "top 25%", scrub: true } });
             gsap.fromTo(cap, { autoAlpha: 0, y: 40 },
@@ -383,12 +430,6 @@
               { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.7, ease: "power2.out",
                 scrollTrigger: { trigger: el, start: "top 62%" } });
           });
-        }
-
-        // Chariot procession rail (desktop, WebGL)
-        if (window.initChariotRail &&
-            initChariotRail(document.getElementById("chariotRail"), document.getElementById("chariotCanvas"))) {
-          document.getElementById("storyFlow").classList.add("railed");
         }
       }
     })();

@@ -109,3 +109,16 @@
     });
   }
 })();
+
+/* ---------------- Brand chariot: the little procession beside the title ---------------- */
+(function () {
+  "use strict";
+  var brand = document.querySelector(".site-nav .brand");
+  if (!brand || brand.querySelector(".brand-chariot")) return;
+  var img = document.createElement("img");
+  img.src = "nav-chariot.svg";
+  img.alt = "";
+  img.setAttribute("aria-hidden", "true");
+  img.className = "brand-chariot";
+  brand.appendChild(img);
+})();
