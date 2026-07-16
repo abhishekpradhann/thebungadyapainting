@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Mode · The Bunga Dya Painting</title>
+  <meta name="description" content="Follow the legend of Bunga Dya scene by scene through the 1712 Newari narrative painting.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body class="dark">
+
+  <nav class="site-nav">
+    <a class="brand" href="index.html">The Bunga Dya Painting</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li class="has-drop active">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Explore <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="explore.html">Full View<span class="drop-note">Zoom into the entire painting</span></a></li>
+          <li><a href="story.html" class="active">Story Mode<span class="drop-note">Follow the narrative scene by scene</span></a></li>
+        </ul>
+      </li>
+      <li class="has-drop">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Deep Dive <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="legend.html">The Legend<span class="drop-note">The story the painting tells</span></a></li>
+          <li><a href="iconography.html">Reading the Painting<span class="drop-note">Figures, iconography, and inscriptions</span></a></li>
+          <li><a href="faq.html">FAQ with a Local<span class="drop-note">A conversation with Siddhartha Guvaju</span></a></li>
+        </ul>
+      </li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </nav>
+
+  <div class="mobile-menu">
+    <div class="group"><a href="index.html">Home</a></div>
+    <div class="group">
+      <div class="group-label">Explore</div>
+      <a href="explore.html">Full View</a>
+      <a href="story.html" class="active">Story Mode</a>
+    </div>
+    <div class="group">
+      <div class="group-label">Deep Dive</div>
+      <a href="legend.html">The Legend</a>
+      <a href="iconography.html">Reading the Painting</a>
+      <a href="faq.html">FAQ with a Local</a>
+    </div>
+    <div class="group"><a href="gallery.html">Gallery</a></div>
+    <div class="group"><a href="about.html">About</a></div>
+  </div>
+
+
+  <main class="story-main">
+    <div class="story-top">
+      <div class="story-counter"><span id="curNum">1</span> <span class="total">/ <span id="totNum">&hellip;</span></span></div>
+      <div class="story-progress"><div class="fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="story-stage" id="stage">
+      <div class="scene-figure">
+        <div class="frame">
+          <img id="sceneImg" alt="" decoding="async">
+          <img id="sceneImgB" alt="" decoding="async">
+        </div>
+        <div class="scene-controls">
+          <button id="prevBtn" aria-label="Previous scene">&larr;</button>
+          <button id="nextBtn" aria-label="Next scene">&rarr;</button>
+        </div>
+      </div>
+
+      <div class="scene-panel" id="scenePanel">
+        <p class="scene-section" id="sceneSection"></p>
+        <h1 class="scene-title" id="sceneTitle"></h1>
+        <div class="scene-field">
+          <p class="k">About this scene</p>
+          <p class="v" id="fBackground"></p>
+        </div>
+        <div class="scene-field">
+          <p class="k">Figures &amp; Iconography</p>
+          <p class="v" id="fIconography"></p>
+          <a class="arrow-link" href="iconography.html">Browse the full iconography table <span class="arr">&rarr;</span></a>
+        </div>
+        <a class="arrow-link in-context" id="inContext" href="explore.html">See this scene in the full painting <span class="arr">&rarr;</span></a>
+      </div>
+    </div>
+  </main>
+
+  <div class="filmstrip-wrap">
+    <div class="filmstrip" id="filmstrip" role="tablist" aria-label="Jump to a scene"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="site.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const els = {
+        img: document.getElementById("sceneImg"),
+        imgB: document.getElementById("sceneImgB"),
+        title: document.getElementById("sceneTitle"),
+        section: document.getElementById("sceneSection"),
+        ico: document.getElementById("fIconography"),
+        bak: document.getElementById("fBackground"),
+        cur: document.getElementById("curNum"),
+        tot: document.getElementById("totNum"),
+        fill: document.getElementById("progressFill"),
+        prev: document.getElementById("prevBtn"),
+        next: document.getElementById("nextBtn"),
+        strip: document.getElementById("filmstrip"),
+        panel: document.getElementById("scenePanel"),
+        ctx: document.getElementById("inContext")
+      };
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let scenes = [];
+      let idx = 0;
+
+      function setField(el, value) {
+        if (value && value.trim()) {
+          el.textContent = value;
+          el.classList.remove("empty");
+        } else {
+          el.textContent = "Documentation forthcoming.";
+          el.classList.add("empty");
+        }
+      }
+
+      // Fetch AND decode, so the swap can paint without a stutter
+      function loadImage(src) {
+        return new Promise(resolve => {
+          const im = new Image();
+          im.src = src;
+          if (im.decode) {
+            im.decode().then(() => resolve(im)).catch(() => resolve(im));
+          } else {
+            im.onload = () => resolve(im);
+            im.onerror = () => resolve(im);
+          }
+        });
+      }
+
+      function preload(i) {
+        if (i < 0 || i >= scenes.length) return;
+        loadImage(scenes[i].image);
+      }
+
+      // Two stacked images: "front" is on screen, "back" is the hidden
+      // buffer the next scene is prepared in. Each transition pushes the
+      // old image out while the new one slides in, so the frame is never
+      // empty and nothing flashes.
+      let front = els.img;
+      let back = els.imgB;
+
+      function renderPanel(s) {
+        els.title.textContent = "Scene " + (idx + 1);
+        els.section.textContent = s.section;
+        setField(els.bak, s.background);
+        setField(els.ico, s.iconography);
+        els.cur.textContent = idx + 1;
+        els.fill.style.width = ((idx + 1) / scenes.length * 100) + "%";
+        els.prev.disabled = idx === 0;
+        els.next.disabled = idx === scenes.length - 1;
+        els.ctx.href = "explore.html#scene=" + s.id;
+
+        els.strip.querySelectorAll("button").forEach((b, i) => {
+          b.classList.toggle("active", i === idx);
+          b.setAttribute("aria-selected", i === idx ? "true" : "false");
+        });
+        const active = els.strip.children[idx];
+        if (active) {
+          const left = active.getBoundingClientRect().left - els.strip.getBoundingClientRect().left
+                       + els.strip.scrollLeft - (els.strip.clientWidth - active.offsetWidth) / 2;
+          els.strip.scrollTo({ left: left, behavior: reduceMotion ? "auto" : "smooth" });
+        }
+
+        history.replaceState(null, "", "#scene-" + (idx + 1));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+
+      function renderStatic() {
+        const s = scenes[idx];
+        front.onload = () => front.classList.add("loaded");
+        front.src = s.image;
+        if (front.complete && front.naturalWidth > 0) front.classList.add("loaded");
+        front.alt = s.name;
+        renderPanel(s);
+      }
+
+      let ready = false;
+      let transition = 0;
+
+      function go(i, animate) {
+        const target = Math.max(0, Math.min(scenes.length - 1, i));
+        if (target === idx && ready) return;
+        const dir = target >= idx ? 1 : -1;
+        idx = target;
+        if (animate === false || reduceMotion || !window.gsap || !ready) {
+          renderStatic();
+          return;
+        }
+        const s = scenes[idx];
+        const seq = ++transition;
+        // Fully decode the incoming image first; the push starts only
+        // when the new scene can paint instantly.
+        loadImage(s.image).then(() => {
+          if (seq !== transition) return; // a newer click took over
+          back.src = s.image;
+          back.alt = s.name;
+          renderPanel(s);
+          gsap.killTweensOf([front, back, els.panel]);
+          const dist = 70;
+          const outgoing = front;
+          const incoming = back;
+          gsap.timeline({
+            onComplete: () => {
+              gsap.set([outgoing, incoming], { clearProps: "transform,opacity,visibility" });
+              outgoing.classList.remove("loaded");
+              incoming.classList.add("loaded");
+              front = incoming;
+              back = outgoing;
+            }
+          })
+            .fromTo(outgoing, { x: 0, autoAlpha: 1 },
+                    { x: -dist * dir, autoAlpha: 0, duration: 0.4, ease: "power2.inOut" }, 0)
+            .fromTo(incoming, { x: dist * dir, autoAlpha: 0 },
+                    { x: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out" }, 0.08)
+            .fromTo(els.panel, { x: 18 * dir, autoAlpha: 0 },
+                    { x: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", clearProps: "transform" }, 0.05);
+        });
+      }
+
+      els.prev.addEventListener("click", () => go(idx - 1));
+      els.next.addEventListener("click", () => go(idx + 1));
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "ArrowLeft") go(idx - 1);
+        if (e.key === "ArrowRight") go(idx + 1);
+      });
+
+      fetch("scenes.json")
+        .then(r => r.json())
+        .then(data => {
+          scenes = data;
+          els.tot.textContent = scenes.length;
+
+          scenes.forEach((s, i) => {
+            const b = document.createElement("button");
+            b.setAttribute("role", "tab");
+            b.setAttribute("aria-label", "Scene " + (i + 1));
+            b.innerHTML = '<span class="n">' + (i + 1) + '</span><img loading="lazy" src="scene-thumbs/' + s.id + '.jpg" alt="">';
+            b.addEventListener("click", () => go(i));
+            els.strip.appendChild(b);
+          });
+
+          const m = window.location.hash.match(/scene-(\d+)/);
+          const start = m ? parseInt(m[1], 10) - 1 : 0;
+          go(start, false);
+          ready = true;
+        })
+        .catch(err => {
+          console.error("Failed to load scenes.json:", err);
+          els.title.textContent = "The scenes could not be loaded";
+          els.section.textContent = "";
+          if (window.location.protocol === "file:") {
+            els.bak.textContent = "This page was opened directly as a file. Double-click Start Website.command in the New Website folder, then visit http://localhost:8765/story.html.";
+          }
+        });
+    })();
+  </script>
+</body>
+</html>

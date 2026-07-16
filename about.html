@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About · The Bunga Dya Painting</title>
+  <meta name="description" content="The people and institutions behind the digital preservation of the Bunga Dya painting.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="site.css">
+  <style>
+    .compare-slider{position:relative;width:100%;aspect-ratio:2000/532;overflow:hidden;border-radius:10px;background:#000;cursor:ew-resize;touch-action:none;user-select:none;-webkit-user-select:none;margin-top:18px}
+    .compare-slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+    .compare-slider .cmp-top{clip-path:inset(0 calc(100% - var(--pos,50%)) 0 0)}
+    .compare-slider .cmp-handle{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;margin-left:-1px;background:rgba(255,255,255,.9);pointer-events:none}
+    .compare-slider .cmp-handle span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 1px 6px rgba(0,0,0,.45);color:#222;font-size:14px;line-height:34px;text-align:center;letter-spacing:1px}
+    .compare-slider .cmp-label{position:absolute;bottom:8px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:3px 9px;border-radius:4px;letter-spacing:.04em;pointer-events:none}
+    .compare-slider .cmp-label.left{left:8px}
+    .compare-slider .cmp-label.right{right:8px}
+    .compare-wrap{position:relative}
+    .cmp-expand{position:absolute;top:26px;right:8px;z-index:5;width:36px;height:36px;border:0;border-radius:6px;background:rgba(0,0,0,.6);color:#fff;font-size:17px;line-height:36px;text-align:center;cursor:pointer;padding:0}
+    .cmp-expand:hover{background:rgba(0,0,0,.85)}
+    .compare-wrap:fullscreen{background:#000;display:flex;align-items:center;justify-content:center;padding:0 10px}
+    .compare-wrap:fullscreen .compare-slider{width:100%;margin-top:0;border-radius:0}
+    .compare-wrap:fullscreen .cmp-expand{position:fixed;top:14px;right:14px}
+    .compare-wrap.cmp-fs-fallback{position:fixed;inset:0;z-index:2000;background:#000;display:flex;align-items:center;justify-content:center;padding:0 10px}
+    .compare-wrap.cmp-fs-fallback .compare-slider{width:100%;margin-top:0;border-radius:0}
+    .compare-wrap.cmp-fs-fallback .cmp-expand{position:fixed;top:14px;right:14px}
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a class="brand" href="index.html">The Bunga Dya Painting</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li class="has-drop">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Explore <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="explore.html">Full View<span class="drop-note">Zoom into the entire painting</span></a></li>
+          <li><a href="story.html">Story Mode<span class="drop-note">Follow the narrative scene by scene</span></a></li>
+        </ul>
+      </li>
+      <li class="has-drop">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Deep Dive <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="legend.html">The Legend<span class="drop-note">The story the painting tells</span></a></li>
+          <li><a href="iconography.html">Reading the Painting<span class="drop-note">Figures, iconography, and inscriptions</span></a></li>
+          <li><a href="faq.html">FAQ with a Local<span class="drop-note">A conversation with Siddhartha Guvaju</span></a></li>
+        </ul>
+      </li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </nav>
+
+  <div class="mobile-menu">
+    <div class="group"><a href="index.html">Home</a></div>
+    <div class="group">
+      <div class="group-label">Explore</div>
+      <a href="explore.html">Full View</a>
+      <a href="story.html">Story Mode</a>
+    </div>
+    <div class="group">
+      <div class="group-label">Deep Dive</div>
+      <a href="legend.html">The Legend</a>
+      <a href="iconography.html">Reading the Painting</a>
+      <a href="faq.html">FAQ with a Local</a>
+    </div>
+    <div class="group"><a href="gallery.html">Gallery</a></div>
+    <div class="group"><a href="about.html" class="active">About</a></div>
+  </div>
+
+
+  <main class="article">
+    <div class="article-inner">
+      <header class="article-head" data-reveal>
+        <p class="eyebrow">The Project</p>
+        <h1 class="title">About</h1>
+        <p class="lede">A digital archive built with the guidance of scholars in Nepal and the United States, so that a painting far from home can be read again by the communities whose history it records, and by anyone drawn to it.</p>
+      </header>
+
+      <section class="block" data-reveal>
+        <h2>How it all started</h2>
+        <p class="subtitle" style="margin:4px 0 12px">The ideation of the project</p>
+        <p class="placeholder-note">The story of how this project began will appear here.</p>
+
+        <div class="compare-wrap" id="compareWrap">
+          <div class="compare-slider" id="compareSlider" style="--pos:50%">
+            <img class="cmp-base" src="compare/pma-painting.jpg" alt="The Bunga Dya painting, Philadelphia Museum of Art, 1712 CE" draggable="false">
+            <img class="cmp-top" src="compare/har-painting.jpg" alt="A closely related bilampau documented by Himalayan Art Resources, 1616 CE" draggable="false">
+            <div class="cmp-handle" aria-hidden="true"><span>&#9666;&#9656;</span></div>
+            <span class="cmp-label left">HAR &middot; 1616 CE</span>
+            <span class="cmp-label right">PMA &middot; 1712 CE</span>
+          </div>
+          <button class="cmp-expand" id="cmpExpand" type="button" title="Full screen" aria-label="Toggle full screen">&#x26F6;</button>
+        </div>
+        <p class="caption" style="margin-top:10px">Drag the divider to compare a closely related bilampau of the same legend, documented by Himalayan Art Resources (left), with this painting (right). Use the &#x26F6; button for a full-screen view.</p>
+      </section>
+
+      <section class="block" data-reveal>
+        <h2>A note on the painting's name</h2>
+        <p style="color:var(--muted)">The Philadelphia Museum of Art catalogues this work as <em>Bunga Dyo, the Legend of Red Avalokiteshvara</em>. This project calls the deity <strong style="color:var(--ink)">Bunga Dya</strong>, the name by which his devotees know him: the god of Bunga, the village of Bungamati where he resides for part of each year. He is also Karunamaya, the Compassionate One; Rato Matsyendranath; and the Red Avalokiteshvara. The name chosen here reflects what the painting is in its own context: not a museum artifact, but the image of a living object of devotion in Newar Buddhism.</p>
+      </section>
+
+      <section class="block" data-reveal>
+        <h2>People</h2>
+        <div class="bio-grid" style="margin-top:26px" data-reveal-group>
+          <div class="bio">
+            <p class="role">Project author</p>
+            <h3>Abhishek Pradhan</h3>
+            <p class="placeholder-note">Biography forthcoming.</p>
+          </div>
+          <div class="bio">
+            <p class="role">Transliteration &amp; iconography study</p>
+            <h3>Dr. Naresh Man Bajracharya</h3>
+            <p class="placeholder-note">Biography forthcoming.</p>
+          </div>
+          <div class="bio">
+            <p class="role">Transliteration &amp; iconography study</p>
+            <h3>Dr. Puspa Ratna Sakya</h3>
+            <p class="placeholder-note">Biography forthcoming.</p>
+          </div>
+          <div class="bio">
+            <p class="role">Faculty advisor</p>
+            <h3>Prof. Melissa Kerin</h3>
+            <p class="placeholder-note">Biography forthcoming.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" data-reveal>
+        <h2>Acknowledgements</h2>
+        <p class="placeholder-note">Gratitude to the people and institutions who made this project possible will appear here.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div><h2>Digital Preservation of Newari History</h2></div>
+        <div class="footer-col">
+          <div class="flabel">Explore</div>
+          <a href="explore.html">Full View</a>
+          <a href="story.html">Story Mode</a>
+          <a href="gallery.html">Gallery</a>
+        </div>
+        <div class="footer-col">
+          <div class="flabel">Deep Dive</div>
+          <a href="legend.html">The Legend</a>
+          <a href="iconography.html">Reading the Painting</a>
+          <a href="faq.html">FAQ with a Local</a>
+          <a href="about.html">About</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Digital Preservation of Newari History</span>
+        <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top &uarr;</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="site.js"></script>
+  <script>
+    (function(){
+      var s = document.getElementById('compareSlider');
+      if(!s) return;
+      function set(x){
+        var r = s.getBoundingClientRect();
+        var p = Math.max(0, Math.min(1, (x - r.left) / r.width));
+        s.style.setProperty('--pos', (p * 100) + '%');
+      }
+      s.addEventListener('pointerdown', function(e){
+        e.preventDefault();
+        s.setPointerCapture(e.pointerId);
+        set(e.clientX);
+        function mv(ev){ set(ev.clientX); }
+        function up(ev){
+          s.removeEventListener('pointermove', mv);
+          s.removeEventListener('pointerup', up);
+          s.removeEventListener('pointercancel', up);
+        }
+        s.addEventListener('pointermove', mv);
+        s.addEventListener('pointerup', up);
+        s.addEventListener('pointercancel', up);
+      });
+
+      var wrap = document.getElementById('compareWrap');
+      var btn = document.getElementById('cmpExpand');
+      var wrapHome = { parent: wrap.parentNode, next: wrap.nextSibling };
+      function setBtn(fs){ btn.innerHTML = fs ? '&#10005;' : '&#x26F6;'; btn.title = fs ? 'Exit full screen' : 'Full screen'; }
+      function enterFallback(){ document.body.appendChild(wrap); wrap.classList.add('cmp-fs-fallback'); document.body.style.overflow = 'hidden'; setBtn(true); }
+      function exitFallback(){ wrap.classList.remove('cmp-fs-fallback'); wrapHome.parent.insertBefore(wrap, wrapHome.next); document.body.style.overflow = ''; setBtn(false); }
+      btn.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (document.fullscreenElement === wrap) { document.exitFullscreen(); }
+        else if (wrap.classList.contains('cmp-fs-fallback')) { exitFallback(); }
+        else if (wrap.requestFullscreen) { wrap.requestFullscreen().catch(enterFallback); }
+        else { enterFallback(); }
+      });
+      document.addEventListener('fullscreenchange', function(){ setBtn(document.fullscreenElement === wrap); });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && wrap.classList.contains('cmp-fs-fallback')) exitFallback();
+      });
+    })();
+  </script>
+</body>
+</html>

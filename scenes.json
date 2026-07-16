@@ -1,0 +1,324 @@
+[
+  {
+    "id": "r1-s1-1",
+    "name": "Row 1, Section 1, Scene 1",
+    "section": "Row 1, Section 1",
+    "image": "scene-images/r1-s1-1.jpg",
+    "coords": {
+      "x": -0.000517604800736704,
+      "y": -0.002685519048187419,
+      "width": 0.18218210884093516,
+      "height": 0.3089554829135622
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s1-2",
+    "name": "Row 1, Section 1, Scene 2",
+    "section": "Row 1, Section 1",
+    "image": "scene-images/r1-s1-2.jpg",
+    "coords": {
+      "x": 0.18180396667108123,
+      "y": -0.003406689906740161,
+      "width": 0.15569328757640594,
+      "height": 0.3149838825801684
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s1-3",
+    "name": "Row 1, Section 1, Scene 3",
+    "section": "Row 1, Section 1",
+    "image": "scene-images/r1-s1-3.jpg",
+    "coords": {
+      "x": 0.33749848512877756,
+      "y": -0.0051688764187813535,
+      "width": 0.1150262770882725,
+      "height": 0.3146824625968381
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s1-4",
+    "name": "Row 1, Section 1, Scene 4",
+    "section": "Row 1, Section 1",
+    "image": "scene-images/r1-s1-4.jpg",
+    "coords": {
+      "x": 0.4525825813608831,
+      "y": -0.002573489202697235,
+      "width": 0.10222017069275907,
+      "height": 0.31468246259683813
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s2-1",
+    "name": "Row 1, Section 2, Scene 1",
+    "section": "Row 1, Section 2",
+    "image": "scene-images/r1-s2-1.jpg",
+    "coords": {
+      "x": 0.5545551730618953,
+      "y": -0.0019250149422957716,
+      "width": 0.1776847262377489,
+      "height": 0.3164909824968199
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s2-2",
+    "name": "Row 1, Section 2, Scene 2",
+    "section": "Row 1, Section 2",
+    "image": "scene-images/r1-s2-2.jpg",
+    "coords": {
+      "x": 0.7320423441610051,
+      "y": -0.002217199523304858,
+      "width": 0.12234405217142298,
+      "height": 0.3237250620967472
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s2-3",
+    "name": "Row 1, Section 2, Scene 3",
+    "section": "Row 1, Section 2",
+    "image": "scene-images/r1-s2-3.jpg",
+    "coords": {
+      "x": 0.8543536100514708,
+      "y": -0.002502871489928148,
+      "width": 0.04253456767081254,
+      "height": 0.3246293220467381
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r1-s2-4",
+    "name": "Row 1, Section 2, Scene 4",
+    "section": "Row 1, Section 2",
+    "image": "scene-images/r1-s2-4.jpg",
+    "coords": {
+      "x": 0.8966730988817531,
+      "y": -0.0025493704528106132,
+      "width": 0.10382093399219827,
+      "height": 0.3246293220467381
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s1-1",
+    "name": "Row 2, Section 1, Scene 1",
+    "section": "Row 2, Section 1",
+    "image": "scene-images/r2-s1-1.jpg",
+    "coords": {
+      "x": -0.00046228871493991797,
+      "y": 0.3051374416456893,
+      "width": 0.062944299738662,
+      "height": 0.3201080222967835
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s1-2",
+    "name": "Row 2, Section 1, Scene 2",
+    "section": "Row 2, Section 1",
+    "image": "scene-images/r2-s1-2.jpg",
+    "coords": {
+      "x": 0.06209195503344006,
+      "y": 0.3050646534963349,
+      "width": 0.10832184552817026,
+      "height": 0.3248422001178386
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s1-3",
+    "name": "Row 2, Section 1, Scene 3",
+    "section": "Row 2, Section 1",
+    "image": "scene-images/r2-s1-3.jpg",
+    "coords": {
+      "x": 0.16992620848826157,
+      "y": 0.3081565882604849,
+      "width": 0.19476122427514633,
+      "height": 0.3199551935673934
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s1-4",
+    "name": "Row 2, Section 1, Scene 4",
+    "section": "Row 2, Section 1",
+    "image": "scene-images/r2-s1-4.jpg",
+    "coords": {
+      "x": 0.3644256729555342,
+      "y": 0.30846062250302464,
+      "width": 0.057099183115380536,
+      "height": 0.3240037431116347
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s1-5",
+    "name": "Row 2, Section 1, Scene 5",
+    "section": "Row 2, Section 1",
+    "image": "scene-images/r2-s1-5.jpg",
+    "coords": {
+      "x": 0.4213189695933352,
+      "y": 0.3089893370214456,
+      "width": 0.13222171580829506,
+      "height": 0.328196028142654
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s2-1",
+    "name": "Row 2, Section 2, Scene 1",
+    "section": "Row 2, Section 2",
+    "image": "scene-images/r2-s2-1.jpg",
+    "coords": {
+      "x": 0.5533375926044714,
+      "y": 0.3135422034338788,
+      "width": 0.17865834589629415,
+      "height": 0.3226861678161716
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s2-2",
+    "name": "Row 2, Section 2, Scene 2",
+    "section": "Row 2, Section 2",
+    "image": "scene-images/r2-s2-2.jpg",
+    "coords": {
+      "x": 0.7319164237232179,
+      "y": 0.31954428294034276,
+      "width": 0.08651207797216276,
+      "height": 0.32340484525006064
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r2-s2-3",
+    "name": "Row 2, Section 2, Scene 3",
+    "section": "Row 2, Section 2",
+    "image": "scene-images/r2-s2-3.jpg",
+    "coords": {
+      "x": 0.8179320542483394,
+      "y": 0.3193455281781361,
+      "width": 0.18089893601654805,
+      "height": 0.32785489592070144
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s1-1",
+    "name": "Row 3, Section 1, Scene 1",
+    "section": "Row 3, Section 1",
+    "image": "scene-images/r3-s1-1.jpg",
+    "coords": {
+      "x": 0.00024079428269779826,
+      "y": 0.6300858396882042,
+      "width": 0.11777274480244014,
+      "height": 0.3601436356704676
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s1-2",
+    "name": "Row 3, Section 1, Scene 2",
+    "section": "Row 3, Section 1",
+    "image": "scene-images/r3-s1-2.jpg",
+    "coords": {
+      "x": 0.1178577355581597,
+      "y": 0.6273121041321101,
+      "width": 0.11722750061353991,
+      "height": 0.3708375558867362
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s1-3",
+    "name": "Row 3, Section 1, Scene 3",
+    "section": "Row 3, Section 1",
+    "image": "scene-images/r3-s1-3.jpg",
+    "coords": {
+      "x": 0.23497581996117567,
+      "y": 0.6352366845901837,
+      "width": 0.22167447743925955,
+      "height": 0.3632483221848681
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s1-4",
+    "name": "Row 3, Section 1, Scene 4",
+    "section": "Row 3, Section 1",
+    "image": "scene-images/r3-s1-4.jpg",
+    "coords": {
+      "x": 0.4561626446289878,
+      "y": 0.6352366845901837,
+      "width": 0.09735880237001715,
+      "height": 0.36221342668006784
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s2-1",
+    "name": "Row 3, Section 2, Scene 1",
+    "section": "Row 3, Section 2",
+    "image": "scene-images/r3-s2-1.jpg",
+    "coords": {
+      "x": 0.5534907770133796,
+      "y": 0.6352003015450931,
+      "width": 0.123268806226554,
+      "height": 0.3611785311752676
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s2-2",
+    "name": "Row 3, Section 2, Scene 2",
+    "section": "Row 3, Section 2",
+    "image": "scene-images/r3-s2-2.jpg",
+    "coords": {
+      "x": 0.676508089357803,
+      "y": 0.6418543562361131,
+      "width": 0.10625718753286816,
+      "height": 0.3549691581464667
+    },
+    "background": "",
+    "iconography": ""
+  },
+  {
+    "id": "r3-s2-3",
+    "name": "Row 3, Section 2, Scene 3",
+    "section": "Row 3, Section 2",
+    "image": "scene-images/r3-s2-3.jpg",
+    "coords": {
+      "x": 0.7822837581163488,
+      "y": 0.6430064859973165,
+      "width": 0.21670185043648985,
+      "height": 0.3539342626416663
+    },
+    "background": "",
+    "iconography": ""
+  }
+]

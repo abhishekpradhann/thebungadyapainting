@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hotspot Region Picker</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #111; font-family: -apple-system, sans-serif; }
+  #layout { display: flex; height: 100vh; }
+  #viewer { flex: 1; height: 100%; position: relative; }
+  #drawSurface { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; cursor: crosshair; display: none; }
+  #drawSurface.active { display: block; }
+  #dragBox { position: absolute; border: 2px solid #ff0; background: rgba(255,255,0,0.2); pointer-events: none; display: none; }
+  #sidebar { width: 340px; background: #1c1c1c; color: #eee; padding: 14px; overflow-y: auto; box-sizing: border-box; }
+  #sidebar h2 { font-size: 16px; margin-top: 0; }
+  #sidebar p { font-size: 12px; color: #aaa; line-height: 1.4; }
+  .region-item { background: #2a2a2a; border-radius: 6px; padding: 8px; margin-bottom: 8px; }
+  .region-item.targeted { outline: 2px solid #c63; }
+  .region-item .region-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .region-item .coords { font-size: 11px; color: #8f8; font-family: monospace; word-break: break-all; margin-bottom: 6px; }
+  .region-item button { font-size: 11px; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 6px; }
+  .region-item button.redraw-btn { background: #356; }
+  .region-item button.redraw-btn.active { background: #c63; }
+  .region-item button.remove-btn { background: #533; color: #fdd; }
+  #exportBtn { width: 100%; padding: 10px; background: #2a6; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+  #exportBtn:hover { background: #3b7; }
+  #addBtn { width: 100%; padding: 8px; background: #555; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; margin-bottom: 10px; }
+  #addBtn.active { background: #c63; }
+  #status { font-size: 12px; color: #fc6; min-height: 16px; margin-bottom: 8px; }
+  textarea { width: 100%; height: 150px; box-sizing: border-box; font-size: 10px; font-family: monospace; margin-top: 10px; }
+  .overlay-label {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: rgba(0,0,0,0.75);
+    color: #ff0;
+    font-size: 11px;
+    padding: 1px 4px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="layout">
+  <div id="viewer">
+    <div id="drawSurface"></div>
+    <div id="dragBox"></div>
+  </div>
+  <div id="sidebar">
+    <h2>Hotspot Region Picker</h2>
+    <p>Existing scenes from scenes.json are loaded below with their current boxes shown on the painting. Click "Redraw" next to a scene, then click-drag a new box to replace its position. Click "Add New Scene" to draw a brand new one. When done, click Export and paste the JSON back to replace scenes.json.</p>
+    <div id="status"></div>
+    <button id="addBtn">Add New Scene</button>
+    <div id="regionList"></div>
+    <button id="exportBtn">Export JSON</button>
+    <textarea id="output" readonly placeholder="Exported JSON will appear here"></textarea>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+<script>
+  if (window.location.protocol === "file:") {
+    document.getElementById("viewer").innerHTML =
+      '<div style="max-width:520px;margin:120px auto 0;padding:0 24px;color:#ccc;font-size:14px;line-height:1.7;">' +
+      '<h2 style="color:#fff;">The picker needs the local server</h2>' +
+      '<p>Double-click <strong>Start Website.command</strong> in the New Website folder, then go to <a href="http://localhost:8765/picker.html" style="color:#fc6;">http://localhost:8765/picker.html</a>.</p>' +
+      '</div>';
+    throw new Error("picker.html opened via file:// — served instructions instead of initializing the viewer.");
+  }
+
+  const viewer = OpenSeadragon({
+    id: "viewer",
+    prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+    tileSources: "tiles/painting.dzi",
+    showNavigator: true
+  });
+
+  let drawing = false;
+  let drawMode = null; // "new" or scene id string to redraw
+  let mouseDown = false;
+  let startPixel = null;
+  let regions = []; // full scene objects + overlayEl + labelEl
+  let regionCounter = 1000;
+
+  const addBtn = document.getElementById("addBtn");
+  const statusEl = document.getElementById("status");
+  const regionList = document.getElementById("regionList");
+  const drawSurface = document.getElementById("drawSurface");
+  const dragBox = document.getElementById("dragBox");
+  const viewerEl = document.getElementById("viewer");
+
+  function setDrawing(mode) {
+    drawing = mode !== null;
+    drawMode = mode;
+    drawSurface.classList.toggle("active", drawing);
+    addBtn.classList.toggle("active", mode === "new");
+    addBtn.textContent = mode === "new" ? "Drawing new scene… (click-drag)" : "Add New Scene";
+    statusEl.textContent = mode === "new"
+      ? "Click-drag on the painting to draw the new scene's box."
+      : (mode ? `Redrawing "${(regions.find(r => r.id === mode) || {}).name || mode}": click-drag a new box.` : "");
+    renderRegionList();
+  }
+
+  addBtn.addEventListener("click", () => {
+    setDrawing(drawMode === "new" ? null : "new");
+  });
+
+  function imageRectToViewportRect(scene) {
+    const imgSize = viewer.world.getItemAt(0).getContentSize();
+    const imageRect = new OpenSeadragon.Rect(
+      scene.coords.x * imgSize.x,
+      scene.coords.y * imgSize.y,
+      scene.coords.width * imgSize.x,
+      scene.coords.height * imgSize.y
+    );
+    return viewer.viewport.imageToViewportRectangle(imageRect);
+  }
+
+  function drawOverlayForRegion(region) {
+    if (region.overlayEl) viewer.removeOverlay(region.overlayEl);
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "absolute";
+    wrapper.style.top = "0";
+    wrapper.style.left = "0";
+    wrapper.style.width = "100%";
+    wrapper.style.height = "100%";
+    wrapper.style.border = "2px solid #ff0";
+    wrapper.style.background = "rgba(255,255,0,0.12)";
+    wrapper.style.boxSizing = "border-box";
+
+    const label = document.createElement("div");
+    label.className = "overlay-label";
+    label.textContent = region.name || region.id;
+    wrapper.appendChild(label);
+
+    const rect = imageRectToViewportRect(region);
+    viewer.addOverlay(wrapper, rect);
+    region.overlayEl = wrapper;
+  }
+
+  function loadExistingScenes() {
+    fetch("scenes.json")
+      .then(res => res.json())
+      .then(scenes => {
+        regions = scenes.map(s => Object.assign({}, s));
+        regions.forEach(drawOverlayForRegion);
+        renderRegionList();
+      })
+      .catch(err => console.error("Failed to load scenes.json:", err));
+  }
+
+  function whenViewerReady(cb) {
+    if (viewer.world.getItemCount() > 0) cb();
+    else viewer.addOnceHandler("open", cb);
+  }
+  whenViewerReady(loadExistingScenes);
+
+  drawSurface.addEventListener("mousedown", (e) => {
+    if (!drawing) return;
+    mouseDown = true;
+    const rect = viewerEl.getBoundingClientRect();
+    startPixel = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    dragBox.style.left = startPixel.x + "px";
+    dragBox.style.top = startPixel.y + "px";
+    dragBox.style.width = "0px";
+    dragBox.style.height = "0px";
+    dragBox.style.display = "block";
+  });
+
+  drawSurface.addEventListener("mousemove", (e) => {
+    if (!mouseDown || !startPixel) return;
+    const rect = viewerEl.getBoundingClientRect();
+    const curPixel = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    const x = Math.min(startPixel.x, curPixel.x);
+    const y = Math.min(startPixel.y, curPixel.y);
+    const w = Math.abs(curPixel.x - startPixel.x);
+    const h = Math.abs(curPixel.y - startPixel.y);
+    dragBox.style.left = x + "px";
+    dragBox.style.top = y + "px";
+    dragBox.style.width = w + "px";
+    dragBox.style.height = h + "px";
+  });
+
+  drawSurface.addEventListener("mouseup", (e) => {
+    if (!mouseDown || !startPixel) return;
+    mouseDown = false;
+    const rect = viewerEl.getBoundingClientRect();
+    const curPixel = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    dragBox.style.display = "none";
+
+    const x = Math.min(startPixel.x, curPixel.x);
+    const y = Math.min(startPixel.y, curPixel.y);
+    const w = Math.abs(curPixel.x - startPixel.x);
+    const h = Math.abs(curPixel.y - startPixel.y);
+    startPixel = null;
+
+    if (w < 5 || h < 5) { setDrawing(null); return; }
+
+    const topLeftVp = viewer.viewport.pointFromPixel(new OpenSeadragon.Point(x, y));
+    const bottomRightVp = viewer.viewport.pointFromPixel(new OpenSeadragon.Point(x + w, y + h));
+    const viewportRect = new OpenSeadragon.Rect(
+      topLeftVp.x, topLeftVp.y,
+      bottomRightVp.x - topLeftVp.x, bottomRightVp.y - topLeftVp.y
+    );
+
+    const imgRect = viewer.viewport.viewportToImageRectangle(viewportRect);
+    const imgSize = viewer.world.getItemAt(0).getContentSize();
+    const norm = {
+      x: imgRect.x / imgSize.x,
+      y: imgRect.y / imgSize.y,
+      width: imgRect.width / imgSize.x,
+      height: imgRect.height / imgSize.y
+    };
+
+    if (drawMode === "new") {
+      regionCounter++;
+      const region = {
+        id: "scene_" + regionCounter,
+        name: "",
+        coords: norm,
+        section: "",
+        image: "",
+        inscription: "",
+        translation: "",
+        background: "",
+        comparisonImages: []
+      };
+      regions.push(region);
+      drawOverlayForRegion(region);
+    } else {
+      const region = regions.find(r => r.id === drawMode);
+      if (region) {
+        region.coords = norm;
+        drawOverlayForRegion(region);
+      }
+    }
+
+    setDrawing(null);
+  });
+
+  function renderRegionList() {
+    regionList.innerHTML = "";
+    regions.forEach((r) => {
+      const div = document.createElement("div");
+      div.className = "region-item" + (drawMode === r.id ? " targeted" : "");
+      div.innerHTML = `
+        <div class="region-name">${r.name || r.id}</div>
+        <div class="coords">x:${r.coords.x.toFixed(4)} y:${r.coords.y.toFixed(4)} w:${r.coords.width.toFixed(4)} h:${r.coords.height.toFixed(4)}</div>
+        <button class="redraw-btn ${drawMode === r.id ? 'active' : ''}" data-redraw="${r.id}">${drawMode === r.id ? "Drawing…" : "Redraw"}</button>
+        <button class="remove-btn" data-remove="${r.id}">Remove</button>
+      `;
+      regionList.appendChild(div);
+    });
+
+    regionList.querySelectorAll("button[data-redraw]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = e.target.dataset.redraw;
+        setDrawing(drawMode === id ? null : id);
+      });
+    });
+    regionList.querySelectorAll("button[data-remove]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = e.target.dataset.remove;
+        const idx = regions.findIndex(r => r.id === id);
+        if (idx >= 0) {
+          if (regions[idx].overlayEl) viewer.removeOverlay(regions[idx].overlayEl);
+          regions.splice(idx, 1);
+        }
+        renderRegionList();
+      });
+    });
+  }
+
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const data = regions.map(r => {
+      const clone = Object.assign({}, r);
+      delete clone.overlayEl;
+      return clone;
+    });
+    document.getElementById("output").value = JSON.stringify(data, null, 2);
+  });
+</script>
+</body>
+</html>

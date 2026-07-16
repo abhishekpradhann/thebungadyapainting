@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery · The Bunga Dya Painting</title>
+  <meta name="description" content="Photographs of the Rato Macchindranath chariot festival and the living world of Bunga Dya.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a class="brand" href="index.html">The Bunga Dya Painting</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li class="has-drop">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Explore <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="explore.html">Full View<span class="drop-note">Zoom into the entire painting</span></a></li>
+          <li><a href="story.html">Story Mode<span class="drop-note">Follow the narrative scene by scene</span></a></li>
+        </ul>
+      </li>
+      <li class="has-drop">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Deep Dive <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="legend.html">The Legend<span class="drop-note">The story the painting tells</span></a></li>
+          <li><a href="iconography.html">Reading the Painting<span class="drop-note">Figures, iconography, and inscriptions</span></a></li>
+          <li><a href="faq.html">FAQ with a Local<span class="drop-note">A conversation with Siddhartha Guvaju</span></a></li>
+        </ul>
+      </li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </nav>
+
+  <div class="mobile-menu">
+    <div class="group"><a href="index.html">Home</a></div>
+    <div class="group">
+      <div class="group-label">Explore</div>
+      <a href="explore.html">Full View</a>
+      <a href="story.html">Story Mode</a>
+    </div>
+    <div class="group">
+      <div class="group-label">Deep Dive</div>
+      <a href="legend.html">The Legend</a>
+      <a href="iconography.html">Reading the Painting</a>
+      <a href="faq.html">FAQ with a Local</a>
+    </div>
+    <div class="group"><a href="gallery.html" class="active">Gallery</a></div>
+    <div class="group"><a href="about.html">About</a></div>
+  </div>
+
+  <main class="article">
+    <div class="article-inner" style="max-width:1240px">
+      <header class="article-head" data-reveal>
+        <p class="eyebrow">The Living Tradition</p>
+        <h1 class="title">Gallery</h1>
+        <p class="subtitle">The festival and its people, in photographs</p>
+        <p class="lede">Bunga Dya's story does not end on cloth. These photographs follow the deity into the present: the chariot, the crowds, and the valley that still gathers for him each year.</p>
+      </header>
+
+      <div class="masonry" id="masonry"></div>
+      <div class="gallery-empty" id="galleryEmpty" hidden>Photographs from the festival are being added.</div>
+    </div>
+  </main>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged photograph">
+    <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+    <div>
+      <img id="lbImg" alt="">
+      <p class="lb-caption" id="lbCaption"></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div><h2>Digital Preservation of Newari History</h2></div>
+        <div class="footer-col">
+          <div class="flabel">Explore</div>
+          <a href="explore.html">Full View</a>
+          <a href="story.html">Story Mode</a>
+          <a href="gallery.html">Gallery</a>
+        </div>
+        <div class="footer-col">
+          <div class="flabel">Deep Dive</div>
+          <a href="legend.html">The Legend</a>
+          <a href="iconography.html">Reading the Painting</a>
+          <a href="faq.html">FAQ with a Local</a>
+          <a href="about.html">About</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Digital Preservation of Newari History</span>
+        <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top &uarr;</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="site.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const masonry = document.getElementById("masonry");
+      const empty = document.getElementById("galleryEmpty");
+      const lightbox = document.getElementById("lightbox");
+      const lbImg = document.getElementById("lbImg");
+      const lbCaption = document.getElementById("lbCaption");
+
+      function openLightbox(src, caption) {
+        lbImg.src = src;
+        lbCaption.textContent = caption || "";
+        lightbox.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      lightbox.addEventListener("click", closeLightbox);
+      document.getElementById("lbClose").addEventListener("click", closeLightbox);
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
+
+      // Photos are listed in gallery.json:
+      //   [{ "src": "gallery/photo.jpg", "caption": "Optional caption" }, ...]
+      fetch("gallery.json")
+        .then(r => r.json())
+        .then(photos => {
+          if (!photos.length) { empty.hidden = false; return; }
+          photos.forEach(p => {
+            const fig = document.createElement("figure");
+            const img = document.createElement("img");
+            img.src = p.src;
+            img.alt = p.caption || "Festival photograph";
+            img.loading = "lazy";
+            fig.appendChild(img);
+            if (p.caption) {
+              const cap = document.createElement("figcaption");
+              cap.className = "caption";
+              cap.textContent = p.caption;
+              fig.appendChild(cap);
+            }
+            img.addEventListener("click", () => openLightbox(p.src, p.caption));
+            masonry.appendChild(fig);
+          });
+        })
+        .catch(() => { empty.hidden = false; });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full View · The Bunga Dya Painting</title>
+  <meta name="description" content="Explore the complete Bunga Dya painting (Nepal, 1712) in deep zoom.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="site.css">
+  <style>
+    body { overflow: hidden; }
+  </style>
+</head>
+<body class="dark">
+
+  <nav class="site-nav">
+    <a class="brand" href="index.html">The Bunga Dya Painting</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li class="has-drop active">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Explore <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="explore.html" class="active">Full View<span class="drop-note">Zoom into the entire painting</span></a></li>
+          <li><a href="story.html">Story Mode<span class="drop-note">Follow the narrative scene by scene</span></a></li>
+        </ul>
+      </li>
+      <li class="has-drop">
+        <button class="drop-btn" aria-expanded="false" aria-haspopup="true">Deep Dive <span class="chev">&#9662;</span></button>
+        <ul class="dropdown">
+          <li><a href="legend.html">The Legend<span class="drop-note">The story the painting tells</span></a></li>
+          <li><a href="iconography.html">Reading the Painting<span class="drop-note">Figures, iconography, and inscriptions</span></a></li>
+          <li><a href="faq.html">FAQ with a Local<span class="drop-note">A conversation with Siddhartha Guvaju</span></a></li>
+        </ul>
+      </li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </nav>
+
+  <div class="mobile-menu">
+    <div class="group"><a href="index.html">Home</a></div>
+    <div class="group">
+      <div class="group-label">Explore</div>
+      <a href="explore.html" class="active">Full View</a>
+      <a href="story.html">Story Mode</a>
+    </div>
+    <div class="group">
+      <div class="group-label">Deep Dive</div>
+      <a href="legend.html">The Legend</a>
+      <a href="iconography.html">Reading the Painting</a>
+      <a href="faq.html">FAQ with a Local</a>
+    </div>
+    <div class="group"><a href="gallery.html">Gallery</a></div>
+    <div class="group"><a href="about.html">About</a></div>
+  </div>
+
+  <div id="viewer"></div>
+  <p id="viewerHint">Scroll to zoom &middot; drag to move across the painting</p>
+  <div id="exploreTools" aria-label="Viewer controls">
+    <button class="tool-btn" id="zoomOut" aria-label="Zoom out">&minus;</button>
+    <button class="tool-btn" id="zoomIn" aria-label="Zoom in">+</button>
+    <button class="tool-btn wide" id="zoomFit" aria-label="Fit painting to screen">Fit</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+  <script src="site.js"></script>
+  <script>
+    if (window.location.protocol === "file:") {
+      document.getElementById("viewer").innerHTML =
+        '<div style="max-width:560px;margin:140px auto 0;padding:0 24px;font-size:15px;line-height:1.8;color:#bdb4a7;">' +
+        '<h2 style="font-family:var(--font-display);color:#e9e2d6;font-size:24px;margin-bottom:14px;">The viewer needs the local server</h2>' +
+        '<p>Double-click <strong style="color:#e9e2d6;">Start Website.command</strong> in the New Website folder, then visit <a href="http://localhost:8765" style="color:#e0a89a;">http://localhost:8765</a>.</p></div>';
+      throw new Error("explore.html opened via file://; served instructions instead of initializing the viewer.");
+    }
+
+    const viewer = OpenSeadragon({
+      id: "viewer",
+      prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+      tileSources: "tiles/painting.dzi",
+      showNavigator: false,
+      showNavigationControl: false,
+      zoomPerScroll: 1.12,
+      zoomPerClick: 1.4,
+      animationTime: 1.1,
+      gestureSettingsMouse: { flickEnabled: false }
+    });
+
+    viewer.addHandler("open-failed", () => {
+      document.getElementById("viewer").innerHTML =
+        '<div style="max-width:560px;margin:140px auto 0;padding:0 24px;font-size:15px;line-height:1.8;color:#bdb4a7;">' +
+        '<h2 style="font-family:var(--font-display);color:#e9e2d6;font-size:24px;margin-bottom:14px;">The painting could not be loaded</h2>' +
+        '<p>The tile data could not be read. If running locally, make sure the site is served by <code style="color:#e9e2d6;">server.py</code>, not a generic file server.</p></div>';
+    });
+
+    document.getElementById("zoomIn").addEventListener("click", () => {
+      viewer.viewport.zoomBy(1.5); viewer.viewport.applyConstraints();
+    });
+    document.getElementById("zoomOut").addEventListener("click", () => {
+      viewer.viewport.zoomBy(0.67); viewer.viewport.applyConstraints();
+    });
+    document.getElementById("zoomFit").addEventListener("click", () => {
+      const item = viewer.world.getItemAt(0);
+      if (item) viewer.viewport.fitBounds(item.getBounds());
+      else viewer.viewport.goHome();
+    });
+
+    // Deep link: explore.html#scene=r2-s1-3 zooms to that scene's region
+    const sceneMatch = window.location.hash.match(/scene=([\w-]+)/);
+    if (sceneMatch) {
+      fetch("scenes.json").then(r => r.json()).then(scenes => {
+        const scene = scenes.find(s => s.id === sceneMatch[1]);
+        if (!scene) return;
+        const fit = () => {
+          const item = viewer.world.getItemAt(0);
+          const size = item.getContentSize();
+          const rect = item.imageToViewportRectangle(new OpenSeadragon.Rect(
+            scene.coords.x * size.x, scene.coords.y * size.y,
+            scene.coords.width * size.x, scene.coords.height * size.y
+          ));
+          viewer.viewport.fitBounds(rect, true);
+        };
+        if (viewer.world.getItemCount() > 0) fit();
+        else viewer.addOnceHandler("open", fit);
+      });
+    }
+  </script>
+</body>
+</html>

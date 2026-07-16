@@ -1,0 +1,4 @@
+# Netlify header rules — serve the Deep Zoom manifest as XML so
+# OpenSeadragon can parse it (default octet-stream breaks the viewer).
+/tiles/painting.dzi
+  Content-Type: text/xml
