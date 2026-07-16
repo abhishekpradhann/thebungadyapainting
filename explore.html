@@ -11,7 +11,7 @@
     body { overflow: hidden; }
   </style>
 </head>
-<body class="dark">
+<body>
 
   <nav class="site-nav">
     <a class="brand" href="index.html">The Bunga Dya Painting</a>
@@ -68,9 +68,9 @@
   <script>
     if (window.location.protocol === "file:") {
       document.getElementById("viewer").innerHTML =
-        '<div style="max-width:560px;margin:140px auto 0;padding:0 24px;font-size:15px;line-height:1.8;color:#bdb4a7;">' +
-        '<h2 style="font-family:var(--font-display);color:#e9e2d6;font-size:24px;margin-bottom:14px;">The viewer needs the local server</h2>' +
-        '<p>Double-click <strong style="color:#e9e2d6;">Start Website.command</strong> in the New Website folder, then visit <a href="http://localhost:8765" style="color:#e0a89a;">http://localhost:8765</a>.</p></div>';
+        '<div style="max-width:560px;margin:140px auto 0;padding:0 24px;font-size:15px;line-height:1.8;color:var(--muted);">' +
+        '<h2 style="font-family:var(--font-display);color:var(--ink);font-size:24px;margin-bottom:14px;">The viewer needs the local server</h2>' +
+        '<p>Double-click <strong style="color:var(--ink);">Start Website.command</strong> in the New Website folder, then visit <a href="http://localhost:8765" style="color:var(--crimson);">http://localhost:8765</a>.</p></div>';
       throw new Error("explore.html opened via file://; served instructions instead of initializing the viewer.");
     }
 
@@ -88,9 +88,9 @@
 
     viewer.addHandler("open-failed", () => {
       document.getElementById("viewer").innerHTML =
-        '<div style="max-width:560px;margin:140px auto 0;padding:0 24px;font-size:15px;line-height:1.8;color:#bdb4a7;">' +
-        '<h2 style="font-family:var(--font-display);color:#e9e2d6;font-size:24px;margin-bottom:14px;">The painting could not be loaded</h2>' +
-        '<p>The tile data could not be read. If running locally, make sure the site is served by <code style="color:#e9e2d6;">server.py</code>, not a generic file server.</p></div>';
+        '<div style="max-width:560px;margin:140px auto 0;padding:0 24px;font-size:15px;line-height:1.8;color:var(--muted);">' +
+        '<h2 style="font-family:var(--font-display);color:var(--ink);font-size:24px;margin-bottom:14px;">The painting could not be loaded</h2>' +
+        '<p>The tile data could not be read. If running locally, make sure the site is served by <code style="color:var(--ink);">server.py</code>, not a generic file server.</p></div>';
     });
 
     document.getElementById("zoomIn").addEventListener("click", () => {

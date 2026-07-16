@@ -945,13 +945,13 @@ table.chart td { color: var(--muted); }
 .bio p { color: var(--muted); font-size: 15px; }
 
 /* ===========================================================================
-   Explore — Full View (dark)
+   Explore — Full View (light)
    ========================================================================== */
 
 #viewer {
   position: fixed;
   inset: var(--nav-h) 0 0 0;
-  background: #14110e;
+  background: #ffffff;
 }
 
 #viewerHint {
