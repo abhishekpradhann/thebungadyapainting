@@ -7,8 +7,151 @@
   <meta name="description" content="Follow the legend of Bunga Dya scene by scene through the 1712 Newari narrative painting.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="site.css">
+  <style>
+    /* ============ Story Mode · scrollytelling ============ */
+    .story-flow { position: relative; }
+
+    /* Fixed top progress */
+    .story-top {
+      position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 40;
+      pointer-events: none;
+    }
+    .story-progress { height: 2px; background: var(--hairline); }
+    .story-progress .fill { height: 100%; width: 0%; background: var(--crimson); transition: width .15s linear; }
+    .story-counter {
+      position: fixed; left: var(--pad-x); bottom: 22px; z-index: 40;
+      font-family: var(--font-display); font-size: 15px; color: var(--ink);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--line); border-radius: 999px; padding: 5px 16px;
+      opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s;
+      pointer-events: none;
+    }
+    .story-counter.show { opacity: 1; transform: none; }
+    .story-counter .total { color: var(--faint); }
+
+    /* ---- Book cover ---- */
+    .book-cover {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: calc(var(--nav-h) + 24px) var(--pad-x) 90px;
+      position: relative;
+    }
+    .book-cover .eyebrow { color: var(--crimson); letter-spacing: .22em; text-transform: uppercase; font-size: 12px; font-weight: 500; }
+    .book-cover h1 {
+      font-size: clamp(44px, 7vw, 96px); max-width: 12ch;
+      margin: 18px auto 22px; font-weight: 600;
+    }
+    .book-cover .lede { max-width: 520px; color: var(--muted); font-size: 17px; }
+    .book-cover .strip {
+      margin: 44px auto 0; max-width: min(860px, 88vw);
+      border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+      box-shadow: 0 18px 50px -28px rgba(28,24,20,.45);
+      background: #000;
+    }
+    .book-cover .strip img { width: 100%; display: block; }
+    .scroll-hint {
+      position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+      color: var(--faint); font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .scroll-hint .arr { animation: hintdrop 1.8s ease-in-out infinite; font-size: 16px; color: var(--crimson); }
+    @keyframes hintdrop { 0%,100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(7px); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .scroll-hint .arr { animation: none; } }
+
+    /* ---- Chapter pages (registers) ---- */
+    .chapter {
+      min-height: 88vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 0 var(--pad-x);
+    }
+    .chapter .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 22px; }
+    .chapter .label { color: var(--faint); letter-spacing: .22em; text-transform: uppercase; font-size: 12px; margin-bottom: 12px; }
+    .chapter h2 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 500; }
+    .chapter p.note { color: var(--muted); max-width: 460px; margin-top: 16px; font-size: 15.5px; }
+
+    /* ---- Scenes ---- */
+    .s-scene { height: 175vh; position: relative; }
+    .s-hold {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: calc(var(--nav-h) + 26px) clamp(18px, 3.5vw, 48px) 30px;
+    }
+    .s-plate {
+      max-width: 100%;
+      display: flex; flex-direction: column; align-items: center;
+      will-change: transform, opacity;
+    }
+    .s-plate .frame {
+      background: #14110e; padding: clamp(8px, 1vw, 14px);
+      border-radius: 6px;
+      box-shadow: 0 30px 70px -34px rgba(28,24,20,.55);
+    }
+    .s-plate img {
+      max-height: 66vh; max-width: min(1160px, 88vw);
+      width: auto; height: auto; display: block; border-radius: 2px;
+    }
+    .s-caption {
+      margin-top: clamp(16px, 2.4vh, 28px); text-align: center; max-width: 620px;
+      will-change: transform, opacity;
+    }
+    .s-caption .s-eyebrow {
+      font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--crimson); font-weight: 500;
+    }
+    .s-caption .s-text {
+      font-family: var(--font-display); font-style: italic; font-weight: 400;
+      font-size: clamp(17px, 1.7vw, 21px); line-height: 1.55; color: var(--ink);
+      margin-top: 10px;
+    }
+    .s-caption .s-text.empty { display: none; }
+    .s-caption .s-ctx {
+      display: inline-block; margin-top: 12px; font-size: 12.5px; color: var(--faint);
+      text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px;
+    }
+    .s-caption .s-ctx:hover { color: var(--crimson); border-color: var(--crimson); }
+
+    /* ---- Colophon (end) ---- */
+    .colophon {
+      min-height: 92vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 0 var(--pad-x) 60px;
+    }
+    .colophon .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 24px; }
+    .colophon h2 { font-size: clamp(30px, 4.4vw, 52px); max-width: 16ch; font-weight: 500; }
+    .colophon p { color: var(--muted); max-width: 480px; margin-top: 18px; }
+    .colophon .ways { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 34px; }
+    .colophon .ways a {
+      font-size: 14px; text-decoration: none; color: var(--ink);
+      border: 1px solid var(--line); border-radius: 999px; padding: 10px 22px;
+      transition: all .25s;
+    }
+    .colophon .ways a:hover { background: var(--crimson); border-color: var(--crimson); color: var(--on-crimson); }
+
+    /* ---- Chariot procession panel ---- */
+    .chariot-rail {
+      position: fixed; top: var(--nav-h); right: 0; bottom: 0; width: 232px; z-index: 30;
+      border-left: 1px solid var(--hairline);
+      background: linear-gradient(180deg, #f3efe6, #ece6d9);
+      display: none;
+    }
+    .chariot-rail canvas { display: block; width: 100%; height: 100%; }
+    .chariot-rail .rail-label {
+      position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
+      font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--faint); pointer-events: none;
+      padding: 26px 8px 14px;
+      background: linear-gradient(180deg, rgba(236,230,217,0), rgba(236,230,217,.92) 55%);
+    }
+    .chariot-rail .rail-label strong { display: block; color: var(--muted); font-weight: 500; letter-spacing: .16em; }
+    @media (min-width: 1240px) {
+      .chariot-rail.on { display: block; }
+      .story-flow.railed { padding-right: 232px; }
+      .story-flow.railed .story-top { right: 232px; }
+    }
+  </style>
 </head>
-<body class="dark">
+<body>
 
   <nav class="site-nav">
     <a class="brand" href="index.html">The Bunga Dya Painting</a>
@@ -52,224 +195,202 @@
     <div class="group"><a href="about.html">About</a></div>
   </div>
 
+  <main class="story-flow" id="storyFlow">
 
-  <main class="story-main">
-    <div class="story-top">
-      <div class="story-counter"><span id="curNum">1</span> <span class="total">/ <span id="totNum">&hellip;</span></span></div>
-      <div class="story-progress"><div class="fill" id="progressFill"></div></div>
-    </div>
+    <div class="story-top"><div class="story-progress"><div class="fill" id="progressFill"></div></div></div>
+    <div class="story-counter" id="storyCounter">Scene <span id="curNum">1</span> <span class="total">/ <span id="totNum">&hellip;</span></span></div>
 
-    <div class="story-stage" id="stage">
-      <div class="scene-figure">
-        <div class="frame">
-          <img id="sceneImg" alt="" decoding="async">
-          <img id="sceneImgB" alt="" decoding="async">
-        </div>
-        <div class="scene-controls">
-          <button id="prevBtn" aria-label="Previous scene">&larr;</button>
-          <button id="nextBtn" aria-label="Next scene">&rarr;</button>
-        </div>
+    <!-- Book cover -->
+    <header class="book-cover" id="cover">
+      <p class="eyebrow">Explore &middot; Story Mode</p>
+      <h1>The legend, scene by scene</h1>
+      <p class="lede">Three registers of cloth, twenty-three scenes, one story. Read it the way the painters meant it to be read: one episode at a time, left to right, top to bottom.</p>
+      <div class="strip"><img src="compare/pma-painting.jpg" alt="The full Bunga Dya painting"></div>
+      <div class="scroll-hint"><span>Scroll to begin</span><span class="arr">&darr;</span></div>
+    </header>
+
+    <div id="sceneMount"></div>
+
+    <!-- Colophon -->
+    <section class="colophon">
+      <p class="orn">॥ ✽ ॥</p>
+      <h2>The story does not end on cloth</h2>
+      <p>Each year the chariot is built anew, and Bunga Dya rides through the valley once more. The painting is one telling of a story that is still being told.</p>
+      <div class="ways">
+        <a href="legend.html">Read the full legend</a>
+        <a href="explore.html">Zoom into the painting</a>
+        <a href="iconography.html">Read the inscriptions</a>
       </div>
+    </section>
 
-      <div class="scene-panel" id="scenePanel">
-        <p class="scene-section" id="sceneSection"></p>
-        <h1 class="scene-title" id="sceneTitle"></h1>
-        <div class="scene-field">
-          <p class="k">About this scene</p>
-          <p class="v" id="fBackground"></p>
-        </div>
-        <div class="scene-field">
-          <p class="k">Figures &amp; Iconography</p>
-          <p class="v" id="fIconography"></p>
-          <a class="arrow-link" href="iconography.html">Browse the full iconography table <span class="arr">&rarr;</span></a>
-        </div>
-        <a class="arrow-link in-context" id="inContext" href="explore.html">See this scene in the full painting <span class="arr">&rarr;</span></a>
-      </div>
-    </div>
   </main>
 
-  <div class="filmstrip-wrap">
-    <div class="filmstrip" id="filmstrip" role="tablist" aria-label="Jump to a scene"></div>
-  </div>
+  <!-- Chariot procession rail -->
+  <aside class="chariot-rail" id="chariotRail" aria-hidden="true">
+    <canvas id="chariotCanvas"></canvas>
+    <p class="rail-label"><strong>The procession</strong>scroll, and the crowd pulls</p>
+  </aside>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="site.js"></script>
+  <script src="chariot.js"></script>
   <script>
     (function () {
       "use strict";
 
-      const els = {
-        img: document.getElementById("sceneImg"),
-        imgB: document.getElementById("sceneImgB"),
-        title: document.getElementById("sceneTitle"),
-        section: document.getElementById("sceneSection"),
-        ico: document.getElementById("fIconography"),
-        bak: document.getElementById("fBackground"),
-        cur: document.getElementById("curNum"),
-        tot: document.getElementById("totNum"),
-        fill: document.getElementById("progressFill"),
-        prev: document.getElementById("prevBtn"),
-        next: document.getElementById("nextBtn"),
-        strip: document.getElementById("filmstrip"),
-        panel: document.getElementById("scenePanel"),
-        ctx: document.getElementById("inContext")
-      };
-
+      const mount = document.getElementById("sceneMount");
+      const fill = document.getElementById("progressFill");
+      const counter = document.getElementById("storyCounter");
+      const cur = document.getElementById("curNum");
+      const tot = document.getElementById("totNum");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let scenes = [];
-      let idx = 0;
 
-      function setField(el, value) {
-        if (value && value.trim()) {
-          el.textContent = value;
-          el.classList.remove("empty");
-        } else {
-          el.textContent = "Documentation forthcoming.";
-          el.classList.add("empty");
-        }
+      const registers = {
+        "Row 1": { title: "Register One", h2: "The upper band of the cloth", note: "Crowned by inscription line one. The story begins here, read left to right." },
+        "Row 2": { title: "Register Two", h2: "The middle band", note: "Crowned by inscription line two. The journey continues." },
+        "Row 3": { title: "Register Three", h2: "The lower band", note: "Crowned by inscription line three — the line that dates the painting to Nepal Sambat 832, 1712 CE." }
+      };
+      const ordinals = ["one", "two", "three"];
+
+      function sectionLabel(s) {
+        const m = s.section.match(/Row (\d), Section (\d)/);
+        if (!m) return s.section;
+        return "Register " + (ordinals[+m[1] - 1] || m[1]) + " · Section " + m[2];
       }
-
-      // Fetch AND decode, so the swap can paint without a stutter
-      function loadImage(src) {
-        return new Promise(resolve => {
-          const im = new Image();
-          im.src = src;
-          if (im.decode) {
-            im.decode().then(() => resolve(im)).catch(() => resolve(im));
-          } else {
-            im.onload = () => resolve(im);
-            im.onerror = () => resolve(im);
-          }
-        });
-      }
-
-      function preload(i) {
-        if (i < 0 || i >= scenes.length) return;
-        loadImage(scenes[i].image);
-      }
-
-      // Two stacked images: "front" is on screen, "back" is the hidden
-      // buffer the next scene is prepared in. Each transition pushes the
-      // old image out while the new one slides in, so the frame is never
-      // empty and nothing flashes.
-      let front = els.img;
-      let back = els.imgB;
-
-      function renderPanel(s) {
-        els.title.textContent = "Scene " + (idx + 1);
-        els.section.textContent = s.section;
-        setField(els.bak, s.background);
-        setField(els.ico, s.iconography);
-        els.cur.textContent = idx + 1;
-        els.fill.style.width = ((idx + 1) / scenes.length * 100) + "%";
-        els.prev.disabled = idx === 0;
-        els.next.disabled = idx === scenes.length - 1;
-        els.ctx.href = "explore.html#scene=" + s.id;
-
-        els.strip.querySelectorAll("button").forEach((b, i) => {
-          b.classList.toggle("active", i === idx);
-          b.setAttribute("aria-selected", i === idx ? "true" : "false");
-        });
-        const active = els.strip.children[idx];
-        if (active) {
-          const left = active.getBoundingClientRect().left - els.strip.getBoundingClientRect().left
-                       + els.strip.scrollLeft - (els.strip.clientWidth - active.offsetWidth) / 2;
-          els.strip.scrollTo({ left: left, behavior: reduceMotion ? "auto" : "smooth" });
-        }
-
-        history.replaceState(null, "", "#scene-" + (idx + 1));
-        preload(idx + 1);
-        preload(idx - 1);
-      }
-
-      function renderStatic() {
-        const s = scenes[idx];
-        front.onload = () => front.classList.add("loaded");
-        front.src = s.image;
-        if (front.complete && front.naturalWidth > 0) front.classList.add("loaded");
-        front.alt = s.name;
-        renderPanel(s);
-      }
-
-      let ready = false;
-      let transition = 0;
-
-      function go(i, animate) {
-        const target = Math.max(0, Math.min(scenes.length - 1, i));
-        if (target === idx && ready) return;
-        const dir = target >= idx ? 1 : -1;
-        idx = target;
-        if (animate === false || reduceMotion || !window.gsap || !ready) {
-          renderStatic();
-          return;
-        }
-        const s = scenes[idx];
-        const seq = ++transition;
-        // Fully decode the incoming image first; the push starts only
-        // when the new scene can paint instantly.
-        loadImage(s.image).then(() => {
-          if (seq !== transition) return; // a newer click took over
-          back.src = s.image;
-          back.alt = s.name;
-          renderPanel(s);
-          gsap.killTweensOf([front, back, els.panel]);
-          const dist = 70;
-          const outgoing = front;
-          const incoming = back;
-          gsap.timeline({
-            onComplete: () => {
-              gsap.set([outgoing, incoming], { clearProps: "transform,opacity,visibility" });
-              outgoing.classList.remove("loaded");
-              incoming.classList.add("loaded");
-              front = incoming;
-              back = outgoing;
-            }
-          })
-            .fromTo(outgoing, { x: 0, autoAlpha: 1 },
-                    { x: -dist * dir, autoAlpha: 0, duration: 0.4, ease: "power2.inOut" }, 0)
-            .fromTo(incoming, { x: dist * dir, autoAlpha: 0 },
-                    { x: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out" }, 0.08)
-            .fromTo(els.panel, { x: 18 * dir, autoAlpha: 0 },
-                    { x: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", clearProps: "transform" }, 0.05);
-        });
-      }
-
-      els.prev.addEventListener("click", () => go(idx - 1));
-      els.next.addEventListener("click", () => go(idx + 1));
-
-      document.addEventListener("keydown", e => {
-        if (e.key === "ArrowLeft") go(idx - 1);
-        if (e.key === "ArrowRight") go(idx + 1);
-      });
 
       fetch("scenes.json")
         .then(r => r.json())
-        .then(data => {
-          scenes = data;
-          els.tot.textContent = scenes.length;
+        .then(scenes => {
+          tot.textContent = scenes.length;
+          let lastRow = "";
+          const frag = document.createDocumentFragment();
 
           scenes.forEach((s, i) => {
-            const b = document.createElement("button");
-            b.setAttribute("role", "tab");
-            b.setAttribute("aria-label", "Scene " + (i + 1));
-            b.innerHTML = '<span class="n">' + (i + 1) + '</span><img loading="lazy" src="scene-thumbs/' + s.id + '.jpg" alt="">';
-            b.addEventListener("click", () => go(i));
-            els.strip.appendChild(b);
+            const row = (s.section.match(/Row \d/) || [""])[0];
+            if (row && row !== lastRow && registers[row]) {
+              lastRow = row;
+              const ch = document.createElement("section");
+              ch.className = "chapter";
+              ch.innerHTML =
+                '<p class="orn">॥ ✽ ॥</p>' +
+                '<p class="label">' + registers[row].title + "</p>" +
+                '<h2>' + registers[row].h2 + "</h2>" +
+                '<p class="note">' + registers[row].note + "</p>";
+              frag.appendChild(ch);
+            }
+
+            const sec = document.createElement("section");
+            sec.className = "s-scene";
+            sec.id = "scene-" + (i + 1);
+            sec.dataset.i = i;
+
+            const hasText = s.background && s.background.trim();
+            sec.innerHTML =
+              '<div class="s-hold">' +
+                '<div class="s-plate">' +
+                  '<div class="frame"><img ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async" src="' + s.image + '" alt="Scene ' + (i + 1) + " of the painting: " + sectionLabel(s) + '"></div>' +
+                '</div>' +
+                '<div class="s-caption">' +
+                  '<p class="s-eyebrow">Scene ' + (i + 1) + " &middot; " + sectionLabel(s) + "</p>" +
+                  '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
+                  '<a class="s-ctx" href="explore.html#scene=' + s.id + '">View this scene in the full painting</a>' +
+                '</div>' +
+              '</div>';
+            frag.appendChild(sec);
           });
 
+          mount.appendChild(frag);
+          initScrolly(scenes.length);
+
+          // Deep link: story.html#scene-N
           const m = window.location.hash.match(/scene-(\d+)/);
-          const start = m ? parseInt(m[1], 10) - 1 : 0;
-          go(start, false);
-          ready = true;
+          if (m) {
+            const target = document.getElementById("scene-" + m[1]);
+            if (target) setTimeout(() => target.scrollIntoView({ behavior: "auto", block: "start" }), 60);
+          }
         })
         .catch(err => {
           console.error("Failed to load scenes.json:", err);
-          els.title.textContent = "The scenes could not be loaded";
-          els.section.textContent = "";
-          if (window.location.protocol === "file:") {
-            els.bak.textContent = "This page was opened directly as a file. Double-click Start Website.command in the New Website folder, then visit http://localhost:8765/story.html.";
-          }
+          const p = document.createElement("p");
+          p.style.cssText = "text-align:center;color:var(--muted);padding:120px 24px;";
+          p.textContent = window.location.protocol === "file:"
+            ? "This page was opened directly as a file. Double-click Start Website.command in the New Website folder, then visit http://localhost:8765/story.html."
+            : "The scenes could not be loaded.";
+          mount.appendChild(p);
         });
+
+      function initScrolly(total) {
+        const sceneEls = Array.from(document.querySelectorAll(".s-scene"));
+
+        // Progress + counter
+        function onScroll() {
+          const first = sceneEls[0], last = sceneEls[sceneEls.length - 1];
+          if (!first) return;
+          const start = first.offsetTop - innerHeight * 0.5;
+          const end = last.offsetTop + last.offsetHeight - innerHeight;
+          const p = Math.max(0, Math.min(1, (scrollY - start) / (end - start)));
+          fill.style.width = (p * 100) + "%";
+
+          let active = -1;
+          for (const el of sceneEls) {
+            const r = el.getBoundingClientRect();
+            if (r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5) { active = +el.dataset.i; break; }
+          }
+          if (active >= 0) {
+            cur.textContent = active + 1;
+            counter.classList.add("show");
+            history.replaceState(null, "", "#scene-" + (active + 1));
+          } else {
+            counter.classList.remove("show");
+          }
+        }
+        addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+
+        // Keyboard: arrows step through scenes
+        document.addEventListener("keydown", e => {
+          if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" && e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+          const fwd = e.key === "ArrowRight" || e.key === "ArrowDown";
+          let active = 0;
+          for (const el of sceneEls) {
+            if (el.getBoundingClientRect().top < innerHeight * 0.5) active = +el.dataset.i;
+          }
+          const next = Math.max(0, Math.min(total - 1, active + (fwd ? 1 : -1)));
+          e.preventDefault();
+          sceneEls[next].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        });
+
+        // Scroll-driven transitions
+        if (window.gsap && window.ScrollTrigger && !reduceMotion) {
+          gsap.registerPlugin(ScrollTrigger);
+          sceneEls.forEach(el => {
+            const plate = el.querySelector(".s-plate");
+            const cap = el.querySelector(".s-caption");
+            gsap.fromTo(plate, { autoAlpha: 0, y: 90, scale: 0.96 },
+              { autoAlpha: 1, y: 0, scale: 1, ease: "none",
+                scrollTrigger: { trigger: el, start: "top 85%", end: "top 25%", scrub: true } });
+            gsap.fromTo(cap, { autoAlpha: 0, y: 40 },
+              { autoAlpha: 1, y: 0, ease: "none",
+                scrollTrigger: { trigger: el, start: "top 55%", end: "top 15%", scrub: true } });
+            gsap.fromTo(el.querySelector(".s-hold"), { autoAlpha: 1 },
+              { autoAlpha: 0, ease: "none",
+                scrollTrigger: { trigger: el, start: "bottom 60%", end: "bottom 18%", scrub: true } });
+          });
+          document.querySelectorAll(".chapter, .colophon").forEach(el => {
+            gsap.fromTo(el.children, { autoAlpha: 0, y: 36 },
+              { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.7, ease: "power2.out",
+                scrollTrigger: { trigger: el, start: "top 62%" } });
+          });
+        }
+
+        // Chariot procession rail (desktop, WebGL)
+        if (window.initChariotRail &&
+            initChariotRail(document.getElementById("chariotRail"), document.getElementById("chariotCanvas"))) {
+          document.getElementById("storyFlow").classList.add("railed");
+        }
+      }
     })();
   </script>
 </body>
