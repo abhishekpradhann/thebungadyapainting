@@ -63,23 +63,20 @@
     .chapter .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 22px; }
     .chapter h2 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 500; }
 
-    /* ---- Scenes ---- */
-    .s-scene { height: 128vh; position: relative; }
+    /* ---- Scenes: continuous scroll with breathing room ---- */
+    .s-scene { position: relative; padding: clamp(34px, 6vh, 70px) 0; }
     .s-hold {
-      position: sticky; top: 0; height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: calc(var(--nav-h) + 26px) clamp(18px, 3.5vw, 48px) 30px;
+      padding: 0 clamp(18px, 3.5vw, 48px);
     }
     .s-eyebrow {
       font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
       color: var(--crimson); font-weight: 500; text-align: center;
       margin-bottom: clamp(14px, 2.2vh, 24px);
-      will-change: transform, opacity;
     }
     .s-plate {
       max-width: 100%;
       display: flex; flex-direction: column; align-items: center;
-      will-change: transform, opacity;
     }
     .s-plate img {
       max-height: 68vh; max-width: min(1160px, 88vw);
@@ -89,7 +86,6 @@
     }
     .s-caption {
       margin-top: clamp(12px, 2vh, 22px); text-align: center; max-width: 620px;
-      will-change: transform, opacity;
     }
     .s-caption .s-text {
       font-family: var(--font-display); font-style: italic; font-weight: 400;
@@ -408,28 +404,21 @@
           sceneEls[next].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
         });
 
-        // Scroll-driven transitions
+        // Gentle one-time reveals; scenes never fade back out while scrolling
         if (window.gsap && window.ScrollTrigger && !reduceMotion) {
           gsap.registerPlugin(ScrollTrigger);
           ScrollTrigger.config({ ignoreMobileResize: true });
           sceneEls.forEach(el => {
-            const plate = el.querySelector(".s-plate");
-            const eyebrow = el.querySelector(".s-eyebrow");
-            const cap = el.querySelector(".s-caption");
-            gsap.fromTo([eyebrow, plate], { autoAlpha: 0, y: 90, scale: 0.97 },
-              { autoAlpha: 1, y: 0, scale: 1, ease: "none",
-                scrollTrigger: { trigger: el, start: "top 85%", end: "top 25%", scrub: true } });
-            gsap.fromTo(cap, { autoAlpha: 0, y: 40 },
-              { autoAlpha: 1, y: 0, ease: "none",
-                scrollTrigger: { trigger: el, start: "top 55%", end: "top 15%", scrub: true } });
-            gsap.fromTo(el.querySelector(".s-hold"), { autoAlpha: 1 },
-              { autoAlpha: 0, ease: "none",
-                scrollTrigger: { trigger: el, start: "bottom 60%", end: "bottom 18%", scrub: true } });
+            gsap.from(el.querySelector(".s-hold"), {
+              autoAlpha: 0, y: 26, duration: 0.7, ease: "power2.out",
+              scrollTrigger: { trigger: el, start: "top 82%", once: true }
+            });
           });
           document.querySelectorAll(".chapter, .colophon").forEach(el => {
-            gsap.fromTo(el.children, { autoAlpha: 0, y: 36 },
-              { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.7, ease: "power2.out",
-                scrollTrigger: { trigger: el, start: "top 62%" } });
+            gsap.from(el.children, {
+              autoAlpha: 0, y: 26, stagger: 0.08, duration: 0.7, ease: "power2.out",
+              scrollTrigger: { trigger: el, start: "top 78%", once: true }
+            });
           });
         }
       }
