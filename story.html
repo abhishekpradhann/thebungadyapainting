@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Story Mode · The Bunga Dya Painting</title>
-  <meta name="description" content="Follow the legend of Bunga Dya scene by scene through the 1712 Newari narrative painting.">
+  <title>Story Mode · The Bunga Dyo Painting</title>
+  <meta name="description" content="Follow the legend of Bunga Dyo scene by scene through the 1712 Newari narrative painting.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="site.css">
   <style>
@@ -161,7 +161,7 @@
 <body>
 
   <nav class="site-nav">
-    <a class="brand" href="index.html">The Bunga Dya Painting</a>
+    <a class="brand" href="index.html">The Bunga Dyo Painting</a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li class="has-drop active">
@@ -222,7 +222,7 @@
     <section class="colophon">
       <p class="orn">॥ ✽ ॥</p>
       <h2>The story does not end on cloth</h2>
-      <p>Each year the chariot is built anew, and Bunga Dya rides through the valley once more. The painting is one telling of a story that is still being told.</p>
+      <p>Each year the chariot is built anew, and Bunga Dyo rides through the valley once more. The painting is one telling of a story that is still being told.</p>
       <div class="ways">
         <a href="legend.html">Read the full legend</a>
         <a href="explore.html">Zoom into the painting</a>
@@ -411,6 +411,7 @@
         // Scroll-driven transitions
         if (window.gsap && window.ScrollTrigger && !reduceMotion) {
           gsap.registerPlugin(ScrollTrigger);
+          ScrollTrigger.config({ ignoreMobileResize: true });
           sceneEls.forEach(el => {
             const plate = el.querySelector(".s-plate");
             const eyebrow = el.querySelector(".s-eyebrow");

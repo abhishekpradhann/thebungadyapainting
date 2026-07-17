@@ -1,5 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 250" width="340" height="250">
-  <!-- Rato Machhindranath chariot, pen-and-ink with watercolor. Faces right; wheels turn. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 300" width="260" height="300">
+  <!-- Rato Machhindranath chariot, pen-and-ink with watercolor. Faces right; wheels turn.
+       Anatomy per festival photographs: tall tapering juniper spire (ho: gah) wrapped in
+       crossing red cloth, gajur finial and canopy on top, carved shrine box with gilded
+       torana at the base, solid plank wheels (no spokes) with painted eye marks, and the
+       long dhama prow sloping to the ground with a carved gilded head at its tip. -->
   <defs>
     <filter id="bleed" x="-20%" y="-20%" width="140%" height="140%">
       <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="n"/>
@@ -13,84 +17,114 @@
   </defs>
 
   <!-- ground shadow -->
-  <ellipse cx="165" cy="228" rx="120" ry="9" fill="#8a7a62" opacity="0.18" filter="url(#bleed)"/>
+  <ellipse cx="130" cy="286" rx="112" ry="8" fill="#8a7a62" opacity="0.18" filter="url(#bleed)"/>
 
-  <!-- ===== spire of greenery, leaning gently forward (right) ===== -->
+  <!-- ===== dhama: long prow beam sloping from the base down to the ground, carved head at tip ===== -->
   <g filter="url(#bleed)">
-    <path d="M138 142 L166 142 L178 96 L186 52 L189 20 L183 20 L170 55 L152 100 Z" fill="#7d8f5c" opacity="0.7"/>
-    <path d="M144 142 L162 142 L174 90 L183 40 L186 22 L178 40 L162 92 Z" fill="#5f7546" opacity="0.55"/>
-    <path d="M150 138 L160 138 L172 84 L181 36 L176 50 L160 96 Z" fill="#4c6238" opacity="0.4"/>
+    <path d="M148 236 L236 272 L234 280 L146 246 Z" fill="#6b4c2c" opacity="0.85"/>
+    <!-- carved gilded head at the tip, resting near the ground -->
+    <path d="M232 262 q16 0 18 13 q1 12 -11 14 q-14 2 -17 -10 q-3 -14 10 -17 Z" fill="#b08a3e" opacity="0.9"/>
+    <path d="M236 258 l4 -8 l5 8 Z" fill="#a03326" opacity="0.85"/>
   </g>
   <g filter="url(#ink)" stroke="#4a3826" fill="none" stroke-linecap="round">
-    <path d="M139 142 C150 108 162 68 188 21" stroke-width="2"/>
-    <path d="M166 142 C174 112 182 70 190 20" stroke-width="2"/>
-    <path d="M148 118 L172 116 M154 96 L177 92 M160 74 L182 68 M168 48 L186 42" stroke-width="1.2" opacity="0.7"/>
+    <path d="M148 236 L236 272 M146 246 L232 279" stroke-width="1.6"/>
+    <path d="M232 262 q16 0 18 13 q1 12 -11 14 q-14 2 -17 -10 q-3 -14 10 -17" stroke-width="1.7"/>
+    <circle cx="243" cy="272" r="1.5" fill="#4a3826" stroke="none"/>
+    <path d="M238 280 q4 2 8 0" stroke-width="1.2"/>
   </g>
-  <!-- ribbons streaming from the top -->
-  <g filter="url(#ink)" fill="none" stroke-linecap="round">
-    <path d="M188 24 C170 40 150 48 128 66" stroke="#a03326" stroke-width="2.4" opacity="0.75"/>
-    <path d="M188 28 C176 48 160 62 144 84" stroke="#c05a3a" stroke-width="2" opacity="0.6"/>
-  </g>
-  <!-- red crown + gold finial -->
-  <g filter="url(#bleed)">
-    <path d="M178 22 L198 22 L194 8 L182 8 Z" fill="#a03326" opacity="0.85"/>
-    <circle cx="188" cy="6" r="3.4" fill="#c9982a" opacity="0.95"/>
-  </g>
-  <path d="M178 22 L198 22 M182 8 L194 8" stroke="#4a3826" stroke-width="1.4" filter="url(#ink)"/>
 
-  <!-- ===== base pavilion ===== -->
+  <!-- ===== spire of juniper greenery: tall, tapering, leaning gently forward ===== -->
   <g filter="url(#bleed)">
-    <rect x="86" y="150" width="150" height="34" rx="3" fill="#a03326" opacity="0.8"/>
-    <rect x="80" y="142" width="162" height="10" rx="2" fill="#c9982a" opacity="0.85"/>
-    <rect x="92" y="184" width="138" height="12" fill="#7c5a34" opacity="0.75"/>
+    <path d="M96 196 L148 196 L140 150 L133 104 L128 60 L124 22 L118 22 L110 62 L103 108 L98 152 Z" fill="#7d8f5c" opacity="0.75"/>
+    <path d="M104 196 L140 196 L133 146 L127 96 L123 50 L121 26 L116 52 L110 100 L105 150 Z" fill="#5f7546" opacity="0.6"/>
+    <path d="M112 190 L132 190 L127 138 L122 84 L120 44 L117 86 L113 140 Z" fill="#4c6238" opacity="0.45"/>
+  </g>
+  <!-- juniper texture: short bough strokes -->
+  <g filter="url(#ink)" stroke="#42552f" fill="none" stroke-linecap="round" stroke-width="1.3" opacity="0.75">
+    <path d="M100 182 q8 -4 14 1 M130 178 q8 -5 14 2 M103 158 q8 -4 13 1 M128 154 q8 -4 13 2 M106 132 q7 -4 12 1 M126 128 q7 -4 12 2 M109 106 q6 -4 11 1 M124 102 q6 -3 10 2 M112 80 q6 -4 10 1 M122 76 q5 -3 9 2 M114 54 q5 -3 9 1 M120 38 q4 -3 8 1"/>
+  </g>
+  <!-- outline of the spire -->
+  <g filter="url(#ink)" stroke="#4a3826" fill="none" stroke-linecap="round">
+    <path d="M97 196 C100 148 108 76 118 22" stroke-width="2"/>
+    <path d="M147 196 C140 148 132 74 125 22" stroke-width="2"/>
+  </g>
+  <!-- red cloth bands wrapping the spire, crossing as they climb -->
+  <g filter="url(#bleed)" fill="none" stroke-linecap="round">
+    <path d="M99 178 Q122 170 143 180" stroke="#a03326" stroke-width="5" opacity="0.8"/>
+    <path d="M103 142 Q122 152 139 140" stroke="#a03326" stroke-width="4.6" opacity="0.8"/>
+    <path d="M107 106 Q121 98 135 108" stroke="#a03326" stroke-width="4.2" opacity="0.8"/>
+    <path d="M111 72 Q121 80 131 70" stroke="#a03326" stroke-width="3.8" opacity="0.8"/>
+    <path d="M115 42 Q121 37 128 43" stroke="#a03326" stroke-width="3.4" opacity="0.8"/>
+  </g>
+  <!-- long red drape streaming down the front of the spire -->
+  <g filter="url(#bleed)" fill="none" stroke-linecap="round">
+    <path d="M124 24 C136 70 140 130 146 188" stroke="#c05a3a" stroke-width="4" opacity="0.55"/>
+  </g>
+
+  <!-- ===== crown of the spire: canopy, gajur finial, streamers ===== -->
+  <g filter="url(#ink)" fill="none" stroke-linecap="round">
+    <path d="M120 16 C102 30 84 38 64 52" stroke="#a03326" stroke-width="2.4" opacity="0.75"/>
+    <path d="M121 20 C110 40 96 54 82 72" stroke="#c05a3a" stroke-width="2" opacity="0.6"/>
+  </g>
+  <g filter="url(#bleed)">
+    <path d="M108 22 L136 22 Q122 8 108 22 Z" fill="#a03326" opacity="0.9"/>
+    <rect x="119" y="4" width="4" height="10" fill="#c9982a" opacity="0.95"/>
+    <circle cx="121" cy="3" r="3.2" fill="#c9982a" opacity="0.95"/>
+  </g>
+  <path d="M108 22 h28 M112 18 q9 -8 20 0" stroke="#4a3826" stroke-width="1.4" fill="none" filter="url(#ink)"/>
+
+  <!-- ===== shrine box at the base of the spire, with gilded torana roof ===== -->
+  <g filter="url(#bleed)">
+    <path d="M84 196 L160 196 L154 186 L90 186 Z" fill="#c9982a" opacity="0.9"/>
+    <rect x="90" y="196" width="64" height="40" rx="2" fill="#5c3d20" opacity="0.85"/>
+    <rect x="112" y="204" width="20" height="24" rx="2" fill="#a03326" opacity="0.85"/>
   </g>
   <g filter="url(#ink)" stroke="#4a3826" fill="none">
-    <rect x="86" y="150" width="150" height="34" rx="3" stroke-width="2"/>
-    <path d="M80 142 h162 M92 184 h138 M106 150 v34 M136 150 v34 M166 150 v34 M196 150 v34" stroke-width="1.3" opacity="0.8"/>
+    <path d="M84 196 L160 196 L154 186 L90 186 Z" stroke-width="1.6"/>
+    <rect x="90" y="196" width="64" height="40" rx="2" stroke-width="2"/>
+    <rect x="112" y="204" width="20" height="24" rx="2" stroke-width="1.4"/>
+    <path d="M100 196 v40 M144 196 v40" stroke-width="1.2" opacity="0.8"/>
   </g>
 
-  <!-- ===== pull beam with Bhairav head, facing right ===== -->
+  <!-- ===== chassis: heavy timber platform over the axles ===== -->
   <g filter="url(#bleed)">
-    <path d="M232 190 L316 200 L316 208 L232 200 Z" fill="#7c5a34" opacity="0.8"/>
-    <!-- Bhairav head -->
-    <path d="M300 176 q16 2 18 16 q2 14 -12 16 q-16 2 -20 -12 q-3 -16 14 -20 Z" fill="#b08a3e" opacity="0.9"/>
-    <path d="M300 176 q4 -8 10 -4 q6 3 4 8 Z" fill="#a03326" opacity="0.85"/>
+    <rect x="58" y="236" width="130" height="12" rx="2" fill="#7c5a34" opacity="0.85"/>
   </g>
-  <g filter="url(#ink)" stroke="#4a3826" fill="none" stroke-linecap="round">
-    <path d="M232 190 L316 200 M232 200 L316 208" stroke-width="1.6"/>
-    <path d="M300 176 q16 2 18 16 q2 14 -12 16 q-16 2 -20 -12 q-3 -16 14 -20" stroke-width="1.8"/>
-    <circle cx="309" cy="192" r="1.6" fill="#4a3826" stroke="none"/>
-    <path d="M304 200 q5 3 9 1" stroke-width="1.3"/>
+  <g filter="url(#ink)" stroke="#4a3826" fill="none">
+    <rect x="58" y="236" width="130" height="12" rx="2" stroke-width="1.8"/>
+    <path d="M74 236 v12 M170 236 v12" stroke-width="1.1" opacity="0.7"/>
   </g>
 
-  <!-- ===== wheels (turning) ===== -->
+  <!-- ===== wheels: solid wooden plank discs, painted eye marks, no spokes (turning) ===== -->
   <g>
-    <g transform="translate(120,200)">
+    <g transform="translate(84,256)">
       <g>
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
         <g filter="url(#bleed)">
-          <circle r="30" fill="#b06a3b" opacity="0.55"/>
-          <circle r="10" fill="#a03326" opacity="0.8"/>
+          <circle r="30" fill="#c99b52" opacity="0.85"/>
+          <circle r="30" fill="none" stroke="#a03326" stroke-width="5" opacity="0.7"/>
         </g>
         <g filter="url(#ink)" stroke="#4a3826" fill="none" stroke-linecap="round">
-          <circle r="30" stroke-width="3.4"/>
-          <circle r="23" stroke-width="1.2" opacity="0.6"/>
-          <path d="M0 -27 V27 M-27 0 H27 M-19 -19 L19 19 M-19 19 L19 -19" stroke-width="2"/>
+          <circle r="30" stroke-width="3.2"/>
+          <!-- plank seams across the solid disc -->
+          <path d="M-29 -8 H29 M-29 8 H29" stroke-width="1.2" opacity="0.55"/>
+          <!-- three painted eye marks -->
+          <path d="M-2 -20 q6 4 0 9 q-6 -4 0 -9 Z M-19 8 q7 1 5 9 q-8 0 -5 -9 Z M17 6 q2 8 -6 10 q-3 -8 6 -10 Z" fill="#a03326" stroke="none" opacity="0.85"/>
           <circle r="4.5" stroke-width="2"/>
         </g>
       </g>
     </g>
-    <g transform="translate(205,200)">
+    <g transform="translate(164,256)">
       <g>
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
         <g filter="url(#bleed)">
-          <circle r="30" fill="#b06a3b" opacity="0.55"/>
-          <circle r="10" fill="#a03326" opacity="0.8"/>
+          <circle r="30" fill="#c99b52" opacity="0.85"/>
+          <circle r="30" fill="none" stroke="#a03326" stroke-width="5" opacity="0.7"/>
         </g>
         <g filter="url(#ink)" stroke="#4a3826" fill="none" stroke-linecap="round">
-          <circle r="30" stroke-width="3.4"/>
-          <circle r="23" stroke-width="1.2" opacity="0.6"/>
-          <path d="M0 -27 V27 M-27 0 H27 M-19 -19 L19 19 M-19 19 L19 -19" stroke-width="2"/>
+          <circle r="30" stroke-width="3.2"/>
+          <path d="M-29 -8 H29 M-29 8 H29" stroke-width="1.2" opacity="0.55"/>
+          <path d="M-2 -20 q6 4 0 9 q-6 -4 0 -9 Z M-19 8 q7 1 5 9 q-8 0 -5 -9 Z M17 6 q2 8 -6 10 q-3 -8 6 -10 Z" fill="#a03326" stroke="none" opacity="0.85"/>
           <circle r="4.5" stroke-width="2"/>
         </g>
       </g>
