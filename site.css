@@ -265,16 +265,16 @@ li.open > .dropdown {
 #exploreTools .tool-btn {
   width: 34px;
   height: 34px;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--ink);
+  border: 1px solid rgba(233, 226, 214, 0.35);
+  background: rgba(10, 8, 6, 0.85);
+  color: #f2ecdf;
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-#exploreTools .tool-btn:hover { background: var(--ink); color: var(--bg); }
+#exploreTools .tool-btn:hover { background: #f2ecdf; color: #14110e; }
 
 #exploreTools .tool-btn.wide { width: auto; padding: 0 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-body); }
 
@@ -353,8 +353,6 @@ body.dark .nav-links a, body.dark .nav-links button.drop-btn { color: #9d948a; }
 body.dark .nav-links a.active, body.dark .nav-links li.active > button.drop-btn { color: #e0a89a; }
 body.dark .dropdown { background: #1d1915; border-color: rgba(233, 226, 214, 0.14); }
 body.dark .dropdown a:hover { background: #262119; color: #e9e2d6; }
-body.dark #exploreTools .tool-btn { border-color: rgba(233, 226, 214, 0.25); color: #e9e2d6; background: rgba(20, 17, 14, 0.85); }
-body.dark #exploreTools .tool-btn:hover { background: #e9e2d6; color: #14110e; }
 body.dark .nav-burger span, body.dark .nav-burger span::before, body.dark .nav-burger span::after { background: #e9e2d6; }
 body.dark.menu-open .nav-burger span { background: transparent; }
 body.dark .mobile-menu { background: #14110e; }
@@ -459,23 +457,106 @@ hr.rule { border: 0; border-top: 1px solid var(--line); }
    Home page specifics
    ========================================================================== */
 
-.hero {
-  padding: calc(var(--nav-h) + clamp(40px, 7vw, 96px)) var(--pad-x) 0;
+/* Cinematic hero: slow pan-and-zoom slideshow of the painting's scenes */
+.hero-cine {
+  position: relative;
+  height: min(88vh, 880px);
+  min-height: 520px;
+  margin-top: var(--nav-h);
+  overflow: hidden;
+  background: #14110e;
 }
 
-.hero-head { max-width: 1240px; margin: 0 auto; }
+.hero-cine .slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  will-change: transform, opacity;
+}
 
-.hero-head .display { max-width: 13ch; }
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 12, 9, 0.52) 0%, rgba(16, 12, 9, 0.2) 45%, rgba(16, 12, 9, 0.55) 100%);
+  pointer-events: none;
+}
 
-.hero-meta {
+.hero-center {
+  position: relative;
+  z-index: 2;
+  height: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px 34px;
-  margin-top: 26px;
-  font-size: 13px;
-  letter-spacing: 0.06em;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 var(--pad-x);
+}
+
+.hero-kicker {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  color: var(--faint);
+  letter-spacing: 0.22em;
+  color: rgba(246, 239, 227, 0.78);
+  margin-bottom: clamp(14px, 2vw, 22px);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(40px, 7vw, 96px);
+  line-height: 1.05;
+  color: #f6efe3;
+  text-shadow: 0 2px 34px rgba(10, 8, 6, 0.45);
+  max-width: 16ch;
+}
+
+.hero-cta {
+  margin-top: clamp(24px, 3vw, 36px);
+  padding: 13px 28px;
+  border: 1px solid rgba(246, 239, 227, 0.8);
+  color: #f6efe3;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  background: rgba(16, 12, 9, 0.28);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.hero-cta:hover { background: #f6efe3; color: #241d16; }
+
+.hero-pause {
+  position: absolute;
+  z-index: 3;
+  right: clamp(16px, 2.4vw, 30px);
+  bottom: clamp(16px, 2.4vw, 30px);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(246, 239, 227, 0.55);
+  background: rgba(16, 12, 9, 0.45);
+  color: #f6efe3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-pause:hover { background: rgba(16, 12, 9, 0.72); border-color: rgba(246, 239, 227, 0.95); }
+.hero-pause svg { width: 13px; height: 13px; display: block; }
+.hero-pause .ic-play { display: none; margin-left: 2px; }
+.hero-pause.paused .ic-pause { display: none; }
+.hero-pause.paused .ic-play { display: block; }
+
+@media (max-width: 640px) {
+  .hero-cine { height: 74vh; min-height: 440px; }
 }
 
 .hero-figure {

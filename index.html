@@ -62,23 +62,22 @@
 
   <main>
 
-    <!-- ================= Hero ================= -->
-    <header class="hero">
-      <div class="hero-head">
-        <p class="eyebrow">Digital Preservation of Newari History</p>
-        <h1 class="display" data-reveal-lines>
-          <span style="display:block">The Bunga Dyo</span>
-          <span style="display:block">Painting</span>
-        </h1>
+    <!-- ================= Hero: cinematic scene slideshow ================= -->
+    <header class="hero-cine" id="top">
+      <div class="hero-slides" id="heroSlides" aria-hidden="true">
+        <div class="slide" id="heroSlideA"></div>
+        <div class="slide" id="heroSlideB"></div>
       </div>
-      <figure class="hero-figure" data-reveal>
-        <div class="frame">
-          <img src="hero.jpg" alt="Full view of the Bunga Dyo narrative painting: three horizontal registers of scenes on red and green grounds" fetchpriority="high">
-        </div>
-        <figcaption>
-          <span class="caption">Bunga Dyo, the Red Avalokiteshvara. Narrative bilampau, full view.</span>
-        </figcaption>
-      </figure>
+      <div class="hero-veil"></div>
+      <div class="hero-center">
+        <p class="hero-kicker">Digital Preservation of Newari History</p>
+        <h1 class="hero-title">The Bunga Dyo Painting</h1>
+        <a class="hero-cta" href="explore.html">Explore the painting</a>
+      </div>
+      <button class="hero-pause" id="heroPause" aria-pressed="false" aria-label="Pause the background slideshow" title="Pause slideshow">
+        <svg class="ic-pause" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3.4" height="12" rx="1"></rect><rect x="8.6" y="1" width="3.4" height="12" rx="1"></rect></svg>
+        <svg class="ic-play" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.6c0-.8.9-1.3 1.6-.9l8 5.4c.6.4.6 1.4 0 1.8l-8 5.4c-.7.4-1.6-.1-1.6-.9z"></path></svg>
+      </button>
     </header>
 
     <!-- ================= 01 · The Painting ================= -->
@@ -235,5 +234,121 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
   <script src="site.js"></script>
+  <script>
+  /* Hero slideshow: decode-first double buffer, slow pan-and-zoom, pausable. */
+  (function () {
+    "use strict";
+    var slideA = document.getElementById("heroSlideA");
+    var slideB = document.getElementById("heroSlideB");
+    var btn = document.getElementById("heroPause");
+    if (!slideA || !slideB || !btn) return;
+
+    /* Scenes 7 (r1-s2-3), 9 (r2-s1-1), and 17 (r3-s1-1) are left out on purpose. */
+    var images = [
+      "r1-s1-1", "r1-s1-2", "r1-s1-3", "r1-s1-4", "r1-s2-1", "r1-s2-2", "r1-s2-4",
+      "r2-s1-2", "r2-s1-3", "r2-s1-4", "r2-s1-5", "r2-s2-1", "r2-s2-2", "r2-s2-3",
+      "r3-s1-2", "r3-s1-3", "r3-s1-4", "r3-s2-1", "r3-s2-2", "r3-s2-3"
+    ].map(function (id) { return "scene-images/" + id + ".jpg"; });
+
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var HOLD = 6.5;   // seconds a slide rests before the next crossfade begins
+    var FADE = 1.8;   // crossfade length
+
+    var idx = Math.floor(Math.random() * images.length);
+
+    if (reduceMotion || !window.gsap) {
+      slideA.style.backgroundImage = 'url("' + images[idx] + '")';
+      slideA.style.opacity = "1";
+      btn.style.display = "none";
+      return;
+    }
+
+    function loadImage(src) {
+      return new Promise(function (resolve) {
+        var im = new Image();
+        im.src = src;
+        if (im.decode) { im.decode().then(function () { resolve(im); }).catch(function () { resolve(im); }); }
+        else { im.onload = function () { resolve(im); }; im.onerror = function () { resolve(im); }; }
+      });
+    }
+
+    var front = slideA, back = slideB;
+    var playing = true;
+    var pending = null;   // a transition that arrived while paused
+    var seq = 0;
+    var zoomIn = true;
+    var running = [];
+
+    function prune() {
+      running = running.filter(function (t) { return t.progress() < 1; });
+    }
+
+    function kenBurns(el) {
+      var s0 = zoomIn ? 1.08 : 1.2;
+      var s1 = zoomIn ? 1.2 : 1.08;
+      var x0 = zoomIn ? -2.2 : 2.2;
+      zoomIn = !zoomIn;
+      return gsap.fromTo(el,
+        { scale: s0, xPercent: x0 },
+        { scale: s1, xPercent: -x0, duration: HOLD + FADE * 2, ease: "none" });
+    }
+
+    function schedule() {
+      prune();
+      running.push(gsap.delayedCall(HOLD, next));
+    }
+
+    function next() {
+      var target = (idx + 1) % images.length;
+      var mySeq = ++seq;
+      loadImage(images[target]).then(function () {
+        if (mySeq !== seq) return;
+        var startIt = function () {
+          idx = target;
+          back.style.backgroundImage = 'url("' + images[idx] + '")';
+          running.push(kenBurns(back));
+          running.push(gsap.timeline({
+            onComplete: function () {
+              var o = front; front = back; back = o;
+              gsap.set(back, { opacity: 0 });
+              schedule();
+            }
+          }).fromTo(back, { opacity: 0 }, { opacity: 1, duration: FADE, ease: "power1.inOut" }, 0));
+        };
+        if (playing) startIt(); else pending = startIt;
+      });
+    }
+
+    loadImage(images[idx]).then(function () {
+      front.style.backgroundImage = 'url("' + images[idx] + '")';
+      if (playing) {
+        running.push(kenBurns(front));
+        running.push(gsap.to(front, { opacity: 1, duration: 1.2, ease: "power1.out" }));
+        schedule();
+      } else {
+        gsap.set(front, { opacity: 1 });
+        pending = schedule;
+      }
+    });
+
+    gsap.from([".hero-kicker", ".hero-title", ".hero-cta"], {
+      autoAlpha: 0, y: 26, duration: 1.1, stagger: 0.12, ease: "power3.out", delay: 0.3, clearProps: "transform"
+    });
+
+    btn.addEventListener("click", function () {
+      playing = !playing;
+      btn.classList.toggle("paused", !playing);
+      btn.setAttribute("aria-pressed", playing ? "false" : "true");
+      btn.setAttribute("aria-label", playing ? "Pause the background slideshow" : "Play the background slideshow");
+      btn.title = playing ? "Pause slideshow" : "Play slideshow";
+      if (!playing) {
+        running.forEach(function (t) { t.pause(); });
+      } else {
+        running.forEach(function (t) { if (t.progress() < 1) t.resume(); });
+        if (pending) { var f = pending; pending = null; f(); }
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
