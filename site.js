@@ -120,5 +120,5 @@
   img.alt = "";
   img.setAttribute("aria-hidden", "true");
   img.className = "brand-chariot";
-  brand.appendChild(img);
+  brand.prepend(img);
 })();

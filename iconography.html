@@ -75,66 +75,28 @@
         <div id="scene-map" style="margin-top:38px">
           <h3 style="font-size:21px">Scene Map</h3>
           <p class="subtitle" style="margin:4px 0 12px">How the painting is divided</p>
-          <p style="color:var(--muted)">The painting reads like a page. Three horizontal registers run the length of the cloth, each crowned by a line of golden inscription that narrates it. Each register divides into two sections, and each section into scenes, read left to right, top to bottom. Select any scene to open it in Story Mode.</p>
-          <div class="scroll-cloth">
-            <div class="ins-band">Inscription line one</div>
-            <div class="map-sections">
-              <div class="map-section" style="flex:1">
-                <div class="cells">
-                  <a class="cell" href="story.html#scene-1" title="Open scene 1">1</a>
-                  <a class="cell" href="story.html#scene-2" title="Open scene 2">2</a>
-                  <a class="cell" href="story.html#scene-3" title="Open scene 3">3</a>
-                  <a class="cell" href="story.html#scene-4" title="Open scene 4">4</a>
-                </div>
+          <p style="color:var(--muted)">The painting reads like a page. Three horizontal registers run the length of the cloth, each crowned by a line of inscription that narrates it. Each register divides into two sections, and each section into scenes, read left to right, top to bottom. Select any scene to open it in Story Mode.</p>
+          <div class="map-scroller">
+            <div class="map-figure">
+              <div class="map-lines" aria-hidden="true">
+                <b style="top:1.4%">Inscription<br>line one</b>
+                <b style="top:31.1%">Inscription<br>line two</b>
+                <b style="top:62.5%">Inscription<br>line three</b>
               </div>
-              <div class="map-section" style="flex:1">
-                <div class="cells">
-                  <a class="cell" href="story.html#scene-5" title="Open scene 5">5</a>
-                  <a class="cell" href="story.html#scene-6" title="Open scene 6">6</a>
-                  <a class="cell" href="story.html#scene-7" title="Open scene 7">7</a>
-                  <a class="cell" href="story.html#scene-8" title="Open scene 8">8</a>
-                </div>
+              <div class="map-cloth" id="mapCloth">
+                <img src="painting-full.jpg" alt="The Bunga Dyo painting, shown whole and divided into its twenty-three scenes">
+                <span class="map-ins" style="top:1.4%;height:1.4%"></span>
+                <span class="map-ins" style="top:31.1%;height:1.9%"></span>
+                <span class="map-ins" style="top:62.5%;height:2.0%"></span>
+                <span class="map-split" style="left:55.4%"></span>
               </div>
             </div>
-            <div class="ins-band">Inscription line two</div>
-            <div class="map-sections">
-              <div class="map-section" style="flex:1">
-                <div class="cells">
-                  <a class="cell" href="story.html#scene-9" title="Open scene 9">9</a>
-                  <a class="cell" href="story.html#scene-10" title="Open scene 10">10</a>
-                  <a class="cell" href="story.html#scene-11" title="Open scene 11">11</a>
-                  <a class="cell" href="story.html#scene-12" title="Open scene 12">12</a>
-                  <a class="cell" href="story.html#scene-13" title="Open scene 13">13</a>
-                </div>
-              </div>
-              <div class="map-section" style="flex:1">
-                <div class="cells">
-                  <a class="cell" href="story.html#scene-14" title="Open scene 14">14</a>
-                  <a class="cell" href="story.html#scene-15" title="Open scene 15">15</a>
-                  <a class="cell" href="story.html#scene-16" title="Open scene 16">16</a>
-                </div>
-              </div>
-            </div>
-            <div class="ins-band">Inscription line three</div>
-            <div class="map-sections">
-              <div class="map-section" style="flex:1">
-                <div class="cells">
-                  <a class="cell" href="story.html#scene-17" title="Open scene 17">17</a>
-                  <a class="cell" href="story.html#scene-18" title="Open scene 18">18</a>
-                  <a class="cell" href="story.html#scene-19" title="Open scene 19">19</a>
-                  <a class="cell" href="story.html#scene-20" title="Open scene 20">20</a>
-                </div>
-              </div>
-              <div class="map-section" style="flex:1">
-                <div class="cells">
-                  <a class="cell" href="story.html#scene-21" title="Open scene 21">21</a>
-                  <a class="cell" href="story.html#scene-22" title="Open scene 22">22</a>
-                  <a class="cell" href="story.html#scene-23" title="Open scene 23">23</a>
-                </div>
-              </div>
+            <div class="map-secs">
+              <span style="flex:0 0 55.4%">Section one</span>
+              <span style="flex:1 1 auto">Section two</span>
             </div>
           </div>
-          <p class="caption" style="margin-top:12px">The whole cloth at a glance: scenes 1 to 8 form register one, 9 to 16 register two, 17 to 23 register three, each register crowned by its inscription line. The map is schematic: on the cloth the scenes vary in width, but their order and divisions are exactly these.</p>
+          <p class="map-hint">Scroll sideways to see the whole cloth.</p>
         </div>
 
         <h3 style="font-size:21px; margin-top:42px">Part B &middot; Inscriptions</h3>
@@ -183,8 +145,9 @@
         <p style="color:var(--muted)">Every legible character from every line was copied into gridded charts, one cell per character, following the conventions described in the methodology above. The chart sections were then joined back into a single continuous line each, reading left to right. Because portions of each line are damaged, the inscriptions are best read as connected passages rather than word-perfect sentences. A word-by-word rendering from Newari into Nepali was prepared for each line; the English translations, prepared with Dr.&nbsp;Bajracharya, are forthcoming.</p>
 
         <div class="callout">
+          <p class="callout-label">Reference</p>
           <h3>How to read the transcriptions</h3>
-          <p>A dash (–) marks one illegible character; characters inside parentheses ( ) are unclear readings that are inferred from the expert opinion of Dr.&nbsp;Naresh and Dr.&nbsp;Puspa; square brackets [ ] are readings beneath another character or space; ⟨i⟩ and ⟨?⟩ mark stray vowel signs and unidentifiable traces respectively; ॥✽॥ is a pair of daṇḍas enclosing a drawn auspicious symbol.</p>
+          <p>A dash (–) marks one illegible character; characters inside parentheses ( ) are unclear readings that are inferred from the expert opinion of Dr.&nbsp;Naresh and Dr.&nbsp;Puspa; square brackets [ ] are readings beneath another character or space; ॥✽॥ is a pair of daṇḍas enclosing a drawn auspicious symbol.</p>
         </div>
 
         <div class="line-study" data-reveal>
@@ -199,7 +162,8 @@
           </div>
           <div class="line-field">
             <p class="k">The line in brief</p>
-            <p class="v placeholder-note">A summary of what the line records will appear here.</p>
+            <p class="v" style="font-style:italic;color:var(--muted)">(Note: Inscriptions on scene 1 from register 1 could not be read properly, so there may be gaps in the translation. However, this applies to the other registers as well, as there is notable damage to the cloth.)</p>
+            <p class="v">After the king built a religious circle to worship Amoghapash Lokeshwor, on the day of Shukla Ashtami he gained merit from Shree Lokeshwor, who then caused rain to fall. Dharmaketu, the king, and Chandraketu, his son, called a great sage to recite the story of Amoghapash Lokeshwor and his compassion. But before the sage could tell the story, the king and his son began fighting atop their chariots. Lokeshwor himself had to break up the fight. The country of Magadha had become unlivable due to the lack of rainfall. With nothing to eat, the people were forced to fight amongst themselves, even father and son, and to kill their own family and relatives. Dogs and crows ate the dead bodies. Both kings, Dharmaketu and Chandraketu, were confused to see their country&rsquo;s ponds filled with water again.</p>
           </div>
         </div>
 
@@ -207,15 +171,16 @@
           <h3>Line two &middot; above the second register</h3>
           <div class="line-field">
             <p class="k">In Devanagari</p>
-            <p class="v">&ndash; &ndash; &ndash; &ndash; &ndash; &ndash; क्तां स हि त ॥ ॥ श्री &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; श्री तै लो के श्व र् &ndash; &ndash; &ndash; श्री म हा दे व् ब्र म्हा वि ष्णु लो क पा र स हि त् स भा ॥ ॥ श्री म हा दे व &ndash; ब्र म्हा व ज्र पा नि श्री अ मि ता भ गा &ndash; &ndash; क्र कु छ न्द त था ग त् श्री लो के श्व र न् श्री &ndash; र &ndash; वि &ndash; खं वि खु वि खु नि &ndash; &ndash; &ndash; &ndash; स र्व &ndash; ⟨ि⟩ वा न थ &ndash; &ndash; ✕ व ज्र स त्व ॥ ॥ का र न (वि) (भु) उ &ndash; &ndash; &ndash; वि खु (न) &ndash; &ndash; &ndash; &ndash; (वि) ता &ndash; &ndash; &ndash; &ndash; ⟨ि⟩ त व ङ व् प थ म वि खु (य) ॥ ॥ वि खु न ख त क र्म्म तो र ता अ कु रि शो ध या ङ् न् ज म द्रु त न् तु (त) र स मु ग र न वा &ndash; ना ग पा श न वि या र् प थ म ति रि या (वै) र (ज्ञ) ॥ ॥ वि खु न थ व प थ म ति रि ता व् अ कु रि गा &ndash; या क ॥ ॥ ध्व ⟨ि⟩ &emsp;&emsp; हा कु हि &ndash; हि &ndash; जो &ndash; &ndash; नि र्म &ndash; (ती) र्थ स &ndash; &ndash; प ह त स स म न्त दे व &ndash; &ndash; &ndash; &ndash; &ndash; अ &ndash; &ndash; ङुं च &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; न</p>
+            <p class="v">&ndash; &ndash; &ndash; &ndash; &ndash; &ndash; क्तां स हि त ॥ ॥ श्री &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; श्री तै लो के श्व र् &ndash; &ndash; &ndash; श्री म हा दे व् ब्र म्हा वि ष्णु लो क पा र स हि त् स भा ॥ ॥ श्री म हा दे व &ndash; ब्र म्हा व ज्र पा नि श्री अ मि ता भ गा &ndash; &ndash; क्र कु छ न्द त था ग त् श्री लो के श्व र न् श्री &ndash; र &ndash; वि &ndash; खं वि खु वि खु नि &ndash; &ndash; &ndash; &ndash; स र्व &ndash; &ndash; वा न थ &ndash; &ndash; &ndash; व ज्र स त्व ॥ ॥ का र न (वि) (भु) उ &ndash; &ndash; &ndash; वि खु (न) &ndash; &ndash; &ndash; &ndash; (वि) ता &ndash; &ndash; &ndash; &ndash; &ndash; त व ङ व् प थ म वि खु (य) ॥ ॥ वि खु न ख त क र्म्म तो र ता अ कु रि शो ध या ङ् न् ज म द्रु त न् तु (त) र स मु ग र न वा &ndash; ना ग पा श न वि या र् प थ म ति रि या (वै) र (ज्ञ) ॥ ॥ वि खु न थ व प थ म ति रि ता व् अ कु रि गा &ndash; या क ॥ ॥ ध्व &ndash; &emsp;&emsp; हा कु हि &ndash; हि &ndash; जो &ndash; &ndash; नि र्म &ndash; (ती) र्थ स &ndash; &ndash; प ह त स स म न्त दे व &ndash; &ndash; &ndash; &ndash; &ndash; अ &ndash; &ndash; ङुं च &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; न</p>
           </div>
           <div class="line-field">
             <p class="k">Romanized, with diacritics</p>
-            <p class="v">&ndash; &ndash; &ndash; &ndash; &ndash; &ndash; ktāṃ sa hi ta || || śrī &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; śrī tai lo ke śva r &ndash; &ndash; &ndash; śrī ma hā de v bra mhā vi ṣṇu lo ka pā ra sa hi t sa bhā || || śrī ma hā de va &ndash; bra mhā va jra pā ni śrī a mi tā bha gā &ndash; &ndash; kra ku cha nda ta thā ga t śrī lo ke śva ra n śrī &ndash; ra &ndash; vi &ndash; khaṃ vi khu vi khu ni &ndash; &ndash; &ndash; &ndash; sa rva &ndash; ⟨i⟩ vā na tha &ndash; &ndash; ✕ va jra sa tva || || kā ra na (vi) (bhu) u &ndash; &ndash; &ndash; vi khu (na) &ndash; &ndash; &ndash; &ndash; (vi) tā &ndash; &ndash; &ndash; &ndash; ⟨i⟩ ta va ṅa v pa tha ma vi khu (ya) || || vi khu na kha ta ka rmma to ra tā a ku ri śo dha yā ṅ n ja ma dru ta n tu (ta) ra sa mu ga ra na vā &ndash; nā ga pā śa na vi yā r pa tha ma ti ri yā (vai) ra (jña) || || vi khu na tha va pa tha ma ti ri tā v a ku ri gā &ndash; yā ka || || dhva ⟨i⟩ &emsp;&emsp; hā ku hi &ndash; hi &ndash; jo &ndash; &ndash; ni rma &ndash; (tī) rtha sa &ndash; &ndash; pa ha ta sa sa ma nta de va &ndash; &ndash; &ndash; &ndash; &ndash; a &ndash; &ndash; ṅuṃ ca &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; na</p>
+            <p class="v">&ndash; &ndash; &ndash; &ndash; &ndash; &ndash; ktāṃ sa hi ta || || śrī &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; śrī tai lo ke śva r &ndash; &ndash; &ndash; śrī ma hā de v bra mhā vi ṣṇu lo ka pā ra sa hi t sa bhā || || śrī ma hā de va &ndash; bra mhā va jra pā ni śrī a mi tā bha gā &ndash; &ndash; kra ku cha nda ta thā ga t śrī lo ke śva ra n śrī &ndash; ra &ndash; vi &ndash; khaṃ vi khu vi khu ni &ndash; &ndash; &ndash; &ndash; sa rva &ndash; &ndash; vā na tha &ndash; &ndash; &ndash; va jra sa tva || || kā ra na (vi) (bhu) u &ndash; &ndash; &ndash; vi khu (na) &ndash; &ndash; &ndash; &ndash; (vi) tā &ndash; &ndash; &ndash; &ndash; &ndash; ta va ṅa v pa tha ma vi khu (ya) || || vi khu na kha ta ka rmma to ra tā a ku ri śo dha yā ṅ n ja ma dru ta n tu (ta) ra sa mu ga ra na vā &ndash; nā ga pā śa na vi yā r pa tha ma ti ri yā (vai) ra (jña) || || vi khu na tha va pa tha ma ti ri tā v a ku ri gā &ndash; yā ka || || dhva &ndash; &emsp;&emsp; hā ku hi &ndash; hi &ndash; jo &ndash; &ndash; ni rma &ndash; (tī) rtha sa &ndash; &ndash; pa ha ta sa sa ma nta de va &ndash; &ndash; &ndash; &ndash; &ndash; a &ndash; &ndash; ṅuṃ ca &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; na</p>
           </div>
           <div class="line-field">
             <p class="k">The line in brief</p>
-            <p class="v placeholder-note">A summary of what the line records will appear here.</p>
+            <p class="v" style="font-style:italic;color:var(--muted)">(Note: This line of inscription is a blend of story and tradition.)</p>
+            <p class="v">With Shree Trailokeshwor, Shree Mahadev, Brahma, Vishnu, Vajrapani, Shree Ambitabh, Krakuchanda Tathagata, Shree Lokeswor, monks and nuns, and all gods, Vajra or diamond beings, etc. The monk left his first nun. The first nun performed the six actions of purification, but the monk left her and committed immoral acts instead. Yamdoot, the agent of the god of death, beat the monk on the chest with his hammer and tied him with snakes. The monk had left his wife and committed immoral deeds. Then all the gods gathered at the location of sacred water.</p>
           </div>
         </div>
 
@@ -223,21 +188,24 @@
           <h3>Line three &middot; above the third register</h3>
           <div class="line-field">
             <p class="k">In Devanagari</p>
-            <p class="v">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &ndash; &ndash; &ndash; &ndash; &ndash; हा र &ndash; &ndash; ⟨ि⟩ &ndash; श्री &ndash; &ndash; &ndash; &ndash; भ &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; ओ न्ह &ndash; &ndash; ⟨?⟩ &ndash; &ndash; लो ङ प्र ति ष्ठा या ङा [रि] [पु] न्य त म जि व हि रा ख्व &ndash; &ndash; स ⟨ि⟩ &ndash; या क &ndash; &ndash; स &ndash; हि &ndash; ने च &ndash; व् धू नू का दि न थ्व् सं स्व त् ८ ३ २ श्रा व ण कृ ष्ण च तु द शि म घ न क्ष त्र बु दु वा रा ॥ (?)श्री तै लो के ना थ् (र) थ &ndash; &ndash; वि ज्या च कं ✕ जा त्रा या ङ् अ ने क ध्व जा लो ह न् र क फो &ndash; प क वा न रू या ✕ श्री मी न ना थ या र थ् &ndash; &ndash; द नि या ङ् &ndash; आ चा र्य न पा थ क न श्री व्र म्हा क ल स् ज ज्ञ या ङ् श्री तै लो के ना थ वि वा ह या ङा जा त्रा या (य) या धा? धौ त ॥ श्री ग ङ्गं ज र् सं ख स् प्रि व स ओ झे क ल स स् स ना न् प ज्वा मृ त (स) (हि) त म हा स ना न ॥ ॥ ना ना वा द्य् था ङ् व् सु जं ध धू प थ ङ व् घ छु वा द्य् श्रँ &ndash; भ् &ndash; &ndash; भ् स हि त नं श्री तै लो के ना थ म हा स ना न या च के बि ज्या च का &ndash; त</p>
+            <p class="v">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &ndash; &ndash; &ndash; &ndash; &ndash; हा र &ndash; &ndash; &ndash; &ndash; श्री &ndash; &ndash; &ndash; &ndash; भ &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; ओ न्ह &ndash; &ndash; &ndash; &ndash; &ndash; लो ङ प्र ति ष्ठा या ङा [रि] [पु] न्य त म जि व हि रा ख्व &ndash; &ndash; स &ndash; &ndash; या क &ndash; &ndash; स &ndash; हि &ndash; ने च &ndash; व् धू नू का दि न थ्व् सं स्व त् ८ ३ २ श्रा व ण कृ ष्ण च तु द शि म घ न क्ष त्र बु दु वा रा ॥ (?)श्री तै लो के ना थ् (र) थ &ndash; &ndash; वि ज्या च कं &ndash; जा त्रा या ङ् अ ने क ध्व जा लो ह न् र क फो &ndash; प क वा न रू या &ndash; श्री मी न ना थ या र थ् &ndash; &ndash; द नि या ङ् &ndash; आ चा र्य न पा थ क न श्री व्र म्हा क ल स् ज ज्ञ या ङ् श्री तै लो के ना थ वि वा ह या ङा जा त्रा या (य) या धा? धौ त ॥ श्री ग ङ्गं ज र् सं ख स् प्रि व स ओ झे क ल स स् स ना न् प ज्वा मृ त (स) (हि) त म हा स ना न ॥ ॥ ना ना वा द्य् था ङ् व् सु जं ध धू प थ ङ व् घ छु वा द्य् श्रँ &ndash; भ् &ndash; &ndash; भ् स हि त नं श्री तै लो के ना थ म हा स ना न या च के बि ज्या च का &ndash; त</p>
           </div>
           <div class="line-field">
             <p class="k">Romanized, with diacritics</p>
-            <p class="v">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &ndash; &ndash; &ndash; &ndash; &ndash; hā ra &ndash; &ndash; ⟨i⟩ &ndash; śrī &ndash; &ndash; &ndash; &ndash; bha &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; o nha &ndash; &ndash; ⟨?⟩ &ndash; &ndash; lo ṅa pra ti ṣṭhā yā ṅā [ri] [pu] nya ta ma ji va hi rā khva &ndash; &ndash; sa ⟨i⟩ &ndash; yā ka &ndash; &ndash; sa &ndash; hi &ndash; ne ca &ndash; v dhū nū kā di na thv saṃ sva t 8 3 2 śrā va ṇa kṛ ṣṇa ca tu da śi ma gha na kṣa tra bu du vā rā || (?)śrī tai lo ke nā th (ra) tha &ndash; &ndash; vi jyā ca kaṃ ✕ jā trā yā ṅ a ne ka dhva jā lo ha n ra ka pho &ndash; pa ka vā na rū yā ✕ śrī mī na nā tha yā ra th &ndash; &ndash; da ni yā ṅ &ndash; ā cā rya na pā tha ka na śrī vra mhā ka la s ja jña yā ṅ śrī tai lo ke nā tha vi vā ha yā ṅā jā trā yā (ya) yā dhā? dhau ta || śrī ga ṅgaṃ ja r saṃ kha s pri va sa o jhe ka la sa s sa nā n pa jvā mṛ ta (sa) (hi) ta ma hā sa nā na || || nā nā vā dy thā ṅ v su jaṃ dha dhū pa tha ṅa v gha chu vā dy śrām̐ &ndash; bh &ndash; &ndash; bh sa hi ta naṃ śrī tai lo ke nā tha ma hā sa nā na yā ca ke bi jyā ca kā &ndash; ta</p>
+            <p class="v">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &ndash; &ndash; &ndash; &ndash; &ndash; hā ra &ndash; &ndash; &ndash; &ndash; śrī &ndash; &ndash; &ndash; &ndash; bha &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; &ndash; o nha &ndash; &ndash; &ndash; &ndash; &ndash; lo ṅa pra ti ṣṭhā yā ṅā [ri] [pu] nya ta ma ji va hi rā khva &ndash; &ndash; sa &ndash; &ndash; yā ka &ndash; &ndash; sa &ndash; hi &ndash; ne ca &ndash; v dhū nū kā di na thv saṃ sva t 8 3 2 śrā va ṇa kṛ ṣṇa ca tu da śi ma gha na kṣa tra bu du vā rā || (?)śrī tai lo ke nā th (ra) tha &ndash; &ndash; vi jyā ca kaṃ &ndash; jā trā yā ṅ a ne ka dhva jā lo ha n ra ka pho &ndash; pa ka vā na rū yā &ndash; śrī mī na nā tha yā ra th &ndash; &ndash; da ni yā ṅ &ndash; ā cā rya na pā tha ka na śrī vra mhā ka la s ja jña yā ṅ śrī tai lo ke nā tha vi vā ha yā ṅā jā trā yā (ya) yā dhā? dhau ta || śrī ga ṅgaṃ ja r saṃ kha s pri va sa o jhe ka la sa s sa nā n pa jvā mṛ ta (sa) (hi) ta ma hā sa nā na || || nā nā vā dy thā ṅ v su jaṃ dha dhū pa tha ṅa v gha chu vā dy śrām̐ &ndash; bh &ndash; &ndash; bh sa hi ta naṃ śrī tai lo ke nā tha ma hā sa nā na yā ca ke bi jyā ca kā &ndash; ta</p>
           </div>
           <div class="line-field">
             <p class="k">The line in brief</p>
-            <p class="v placeholder-note">A summary of what the line records, closing with the Nepal Sambat date, will appear here.</p>
+            <p class="v" style="font-style:italic;color:var(--muted)">(Note: This line of inscription is a blend of story and tradition.)</p>
+            <p class="v">Repaired and consecrated. Meritorious work. Completed on Sambat 832 Shrawan Krishna Chaturdashi, Magha Nacchytra, Wednesday. Shree Trailoknath was seated in the chariot. A religious procession was held, hoisting many flags and ritual cloths and presenting many sweet dishes. The Acharya recited the religious texts while keeping a Shree Brahma kalash to worship him. Shree Trailoknath then underwent the ten essential religious rites of life in the Hindu tradition, called Dashakarma, including marriage. He was then bathed in Shree Ganga water, worshiped by blowing a conch shell with water from 4 different oceans, and bathed from a silver Kalash with a mixture of 5 sacred ingredients called Panchamrit. Playing various musical instruments, including animal-horn instruments called Shringabheri, burning fragrant incense, and ringing ritual bells, Shree Trailoknath was taken for the great ablution.</p>
           </div>
         </div>
 
         <div class="callout">
+          <p class="callout-label">Finding</p>
           <h3>The painting dates itself</h3>
           <p>The third line closes with a date written in Nepal Sambat, the calendar of the Newar people: the year 832. Nepal Sambat began in 880 CE, so adding 880 to a Nepal Sambat year gives the year in the common era. Nepal Sambat 832 is 1712 CE, the very date the museum records for the painting. By the same count, the present year, 2026, is Nepal Sambat 1146.</p>
+          <p class="callout-source">Read from the painting by Dr.&nbsp;Naresh Man Bajracharya and Dr.&nbsp;Puspa Ratna Sakya. Unpublished field research for this project.</p>
         </div>
 
         <div class="line-study" data-reveal>
@@ -253,13 +221,15 @@
           </div>
           <div class="line-field">
             <p class="k">The line in brief</p>
-            <p class="v placeholder-note">A summary of what the fragment records will appear here.</p>
+            <p class="v">In the presence of Jaswantaju, Maheswarju, Kayashtha Vishnu Vir, Shree Shree Mahindra Malla Dev Thakur, they did the chariot procession of Trailokyanath.</p>
           </div>
         </div>
 
         <div class="callout">
+          <p class="callout-label">Finding</p>
           <h3>A king the date agrees with</h3>
           <p>This line mentions the name of King Mahindra Malla. Looking at the rulers of Patan during the Malla dynasty, which ran from 1201 to 1769 CE, King Vira Mahindra Malla ruled Patan from 1709 to 1715 CE. The date read on the painting, 1712 CE, falls exactly during his ruling period. Vira is the romanized diacritical form of "Bir", which means heroic in Newari (Nepal Bhasa).</p>
+          <p class="callout-source">Reign dates after <a href="https://en.wikipedia.org/wiki/Vira_Mahindra_Malla" target="_blank" rel="noopener">Vira Mahindra Malla, king of Patan, 1709 to 1715 &nearr;</a> The identification of the name in the inscription is the reading of Dr.&nbsp;Naresh Man Bajracharya and Dr.&nbsp;Puspa Ratna Sakya.</p>
         </div>
       </section>
 
@@ -279,7 +249,7 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-top">
-        <div><h2>Digital Preservation of Newari History</h2></div>
+        <div><h2>The Bunga Dyo Painting</h2></div>
         <div class="footer-col">
           <div class="flabel">Explore</div>
           <a href="explore.html">Full View</a>
@@ -295,7 +265,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2026 Digital Preservation of Newari History</span>
+        <span>&copy; 2026 The Bunga Dyo Painting</span>
         <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top &uarr;</a>
       </div>
     </div>
@@ -310,7 +280,7 @@
     const ICON_DATA = [
       ["Deities",
         ["Shree Amoghapash, Shree Lokeshwar", "Śrī Amōghapāśa, Śrī Lōkēśvara", "Shree Amoghapash, Shree Lokeshwar"],
-        ["Shree Trailokeshwar, Shree Mahadev, Vishnu, Lokpal, Bajrapani, Amitabh, Shree Lokeshwar, Bajrasatva, Jamdut, Krakucchanda", "Śrī Trailōkēśvara, Śrī Mahādēva, Viṣṇu, Lōkapāla, Bajrapāṇi, Amitābha, Śrī Lōkēśvara, Bajrasatva, Jamadūta, Krakucchanda", "Shree Trailokeshwar, Shree Mahadev, Vishnu, Lokapala, Bajrapani, Amitabh, Shree Lokeshwar, Bajrasatva, Yamaraj, Krakucchanda"],
+        ["Shree Trailokeshwar, Shree Mahadev, Vishnu, Lokpal, Bajrapani, Amitabh, Shree Lokeshwar, Bajrasatva, Jamdut, Krakucchanda", "Śrī Trailōkēśvara, Śrī Mahādēva, Viṣṇu, Lōkapāla, Bajrapāṇi, Amitābha, Śrī Lōkēśvara, Bajrasatva, Jamadūta, Krakucchanda", "Shree Trailokeshwar, Shree Mahadev, Vishnu, Lokapala, Bajrapani, Amitabh, Shree Lokeshwar, Bajrasatva, Yamaraj, Krakucchanda: one of the Sapta (seven) Tathagata Buddhas"],
         ["Shree Trailokenath, Shree Minnath", "Śrī Trailōkēnātha, Śrī Minnātha", "Shree Trailokenath, Shree Minnath"]],
       ["Kings",
         ["King Dharmaketu (babu), King Chandraketu (chora)", "Raja Dharmakētu (bābu), Raja Candrakētu (chōrā)", "King Dharmaketu (the father), King Chandraketu (the son)"],
@@ -318,7 +288,7 @@
         ["Shree Mahendra Malla", "Śrī Mahēndra Malla", "Shree Mahendra Malla"]],
       ["Humans",
         ["Maharak Rishi, Dharma Upadeshak, Babu Chora, Afanta, Daju Bhai", "Maharṣi, Dharma Upadēśaka, Bābu Chōrā, Āphanta, Dāju Bhāi", "Great sage, teacher of the dharma, father and son, relatives, brothers"],
-        ["Bhikshu, Bhikshuni, Pahilo Patni, Samantadev", "Bhikṣu, Bhikṣuṇī, Pahilō Patnī, Sāmantadēva", "Monk, nun, the first wife, Samantadev"],
+        ["Bhikshu, Bhikshuni, Pahilo Patni, Samastadev", "Bhikṣu, Bhikṣuṇī, Pahilō Patnī, Sāmastadēva", "Monk, nun, the first wife, all gods"],
         ["Guru", "Guru", "Spiritual or intellectual teacher"]],
       ["Objects",
         ["", "", ""],
@@ -329,8 +299,8 @@
         ["Nirmaltirtha", "Nirmalatīrtha", "Pure or sacred body of water"],
         ["", "", ""]],
       ["Tasks",
-        ["Brata garera, Punya gare, Ratha ma chadera, Pani parnu, Ladhe, Chhinera, Afu afu ladera, Sabha", "Brata garēra, Puṇya garē, Rathamā caḍhēra, Pānī parnu, Laḍē, Chinēra, Āphū āphū laḍēra, Sabhā", "Observing a vow, earning merit, riding the chariot, rainfall, fought, severing, fought among themselves, an assembly"],
-        ["Khathkarma", "Khatakarma", "Final funeral rites"],
+        ["Brata garera, Punya gare, Ratha ma chadera, Pani parnu, Ladhe, Chhinera, Afu afu ladera, Sabha", "Brata garēra, Puṇya garē, Rathamā caḍhēra, Pānī parnu, Laḍē, Chinēra, Āphū āphū laḍēra, Sabhā", "Observing a vow, earning merit, riding the chariot, rainfall, fought, to separate or break off, fought among themselves, an assembly"],
+        ["Khathkarma", "Khatakarma", "Practice of the Six Paramitas or perfections"],
         ["Dhwarohan, Marmat, Pratishta gare, Path gari, Yagya garera, Vivaha gari, Kalash Snan, Panchamrit sahit maha snan, Anek Baja bajaune, Sughandha dhoop balera", "Dhvajārōhaṇa, Marmata, Pratiṣṭhā garē, Pāṭha garī, Yajña garēra, Vivāha garī, Kalaśa Snāna, Pañcāmr̥ta sahita mahā snāna, Anēka Bājā bajāunē, Sugandha dhūpa bālēra", "Raising the flag, repair, performing consecration, reciting scripture, offerings to a sacred fire, performing a marriage, ritual bathing of the vessel, the great ablution with the five nectars, playing many musical instruments, burning fragrant incense"]],
       ["Incidents",
         ["Pani naparera, mare, khaye, anyaul", "Pānī naparēra, Marē, Khāē, Anyōla", "No rain falling, died, ate, confusion"],
@@ -343,7 +313,7 @@
       ["Day/Year",
         ["Shukla Asthami", "Śukla Aṣṭamī", "The eighth day of the bright fortnight"],
         ["", "", ""],
-        ["Sambat 832 Chatudashimagha Nachhytra Budhabar", "Sambat 832 Caturdaśīmāgha Nakṣatra Budhabāra", "Nepal Sambat 832, the fourteenth of Magh, the lunar asterism, a Wednesday"]]
+        ["Sambat 832 Shrawan Chaturdashi, Magha Nachhytra, Budhabar", "Sambat 832 Śrāvaṇa Caturdaśī, Māgha Nakṣatra, Budhabāra", "Nepal Sambat 832, fourth month of the Bikram Sambat calendar, astrological date in the tenth month of the Bikram Sambat calendar, Wednesday"]]
     ];
 
     const CHART_MODES = { roman: 0, iast: 1, en: 2 };
@@ -372,6 +342,33 @@
     });
 
     renderChart();
+
+    // Scene Map: lay the 23 scene boxes onto the painting from their coords
+    // in scenes.json, so the map and the picker never drift apart.
+    const pct = n => (n * 100).toFixed(3) + "%";
+    fetch("scenes.json")
+      .then(r => r.json())
+      .then(scenes => {
+        const cloth = document.getElementById("mapCloth");
+        scenes.forEach((s, i) => {
+          const c = s.coords;
+          const a = document.createElement("a");
+          a.className = "map-scene";
+          a.href = "story.html#scene-" + (i + 1);
+          a.title = "Scene " + (i + 1) + " · " + s.section;
+          a.setAttribute("aria-label", "Scene " + (i + 1) + ", " + s.section + ", open in Story Mode");
+          a.style.left = pct(c.x);
+          a.style.top = pct(c.y);
+          a.style.width = pct(c.width);
+          a.style.height = pct(c.height);
+          // reveal this scene's slice of the full-color painting on hover
+          a.style.setProperty("--bs", pct(1 / c.width) + " " + pct(1 / c.height));
+          a.style.setProperty("--bp", pct(c.x / (1 - c.width)) + " " + pct(c.y / (1 - c.height)));
+          a.innerHTML = "<i>" + (i + 1) + "</i>";
+          cloth.appendChild(a);
+        });
+      })
+      .catch(err => console.error("Scene map: could not load scenes.json", err));
   </script>
 </body>
 </html>

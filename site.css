@@ -688,6 +688,33 @@ hr.rule { border: 0; border-top: 1px solid var(--line); }
 .article section.block h2 { font-size: clamp(22px, 2.4vw, 30px); margin-bottom: 14px; }
 .article section.block h3 { font-size: 18px; margin: 20px 0 8px; }
 
+/* Portrait mounted beside its text, labelled like a catalogue plate. */
+.bio-figure {
+  display: grid;
+  grid-template-columns: 196px minmax(0, 1fr);
+  gap: clamp(22px, 3vw, 34px);
+  align-items: start;
+}
+
+.bio-figure figure { margin: 0; }
+
+.bio-figure img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.bio-figure p { max-width: 52ch; }
+
+.bio-figure figcaption { margin-top: 10px; }
+
+@media (max-width: 640px) {
+  .bio-figure { grid-template-columns: 1fr; gap: 18px; }
+  .bio-figure figure { max-width: 196px; }
+}
+
 .figure-slot {
   border: 1px dashed var(--line);
   background: var(--bg-raise);
@@ -745,6 +772,10 @@ hr.rule { border: 0; border-top: 1px solid var(--line); }
 .seg button:hover:not(.active) { background: rgba(139, 32, 21, 0.08); }
 
 /* Highlighted callout */
+/* A callout is always labelled. The label states which kind of note it is, so a
+   reference key, a finding of this project, and a cited source are never mistaken
+   for one another. The source line carries either a citation or, where the work is
+   unpublished field research, the scholars it is owed to. */
 .callout {
   border-left: 3px solid var(--crimson);
   background: var(--bg-raise);
@@ -754,6 +785,37 @@ hr.rule { border: 0; border-top: 1px solid var(--line); }
 
 .callout h3 { font-size: 19px; margin-bottom: 8px; }
 .callout p { color: var(--muted); margin: 0; }
+.callout p + p { margin-top: 12px; }
+
+.callout .callout-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--crimson);
+  margin: 0 0 7px;
+}
+
+.callout .callout-source {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--faint);
+}
+
+.callout .callout-source cite { font-style: italic; }
+
+.callout .callout-source a {
+  color: var(--crimson);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.callout .callout-source a:hover { color: var(--crimson-deep); }
 
 /* Chart table (Chart II) */
 .chart-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--line); }
@@ -782,83 +844,153 @@ table.chart tbody th {
 
 table.chart td { color: var(--muted); }
 
-/* Scene Map (diagram of registers, sections, scenes) */
-.scroll-map { display: grid; gap: clamp(36px, 5vw, 60px); margin-top: 10px; }
+/* Scene Map: the painting itself, dimmed, divided into its 23 scenes */
+.map-scroller { margin-top: 16px; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
 
-.map-register { display: grid; }
-
-.map-caption {
+.map-figure {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  align-items: stretch;
   gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
+  min-width: 860px;
+  padding-bottom: 4px;
 }
 
-.map-caption .reg-label { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
-
-.ins-band {
-  border: 1px solid var(--line);
-  border-bottom: 0;
-  background:
-    repeating-linear-gradient(115deg, rgba(214, 178, 92, 0.28) 0 2px, transparent 2px 10px),
-    #241e18;
-  color: #d9b869;
-  font-size: 10.5px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  padding: 9px 14px;
-  text-align: center;
+/* Left gutter: one label per inscription line, pinned to its band */
+.map-lines {
+  position: relative;
+  flex: 0 0 104px;
 }
 
-.map-sections {
-  display: flex;
-  border: 1px solid var(--line);
-  background: #fdfcf9;
-}
-
-.map-section { min-width: 0; }
-.map-section + .map-section { border-left: 2px solid var(--crimson); }
-
-.map-section .cells { display: flex; height: 100%; }
-
-.cell {
-  flex: 1;
-  min-width: 0;
-  aspect-ratio: 4 / 5;
-  display: grid;
-  place-items: center;
-  text-decoration: none;
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(14px, 1.8vw, 20px);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.cell + .cell { border-left: 1px solid var(--hairline); }
-.cell:hover { background: var(--crimson); color: var(--on-crimson); }
-
-.sec-labels { display: flex; margin-top: 8px; }
-
-.sec-labels span {
-  font-size: 11px;
-  font-weight: 500;
+.map-lines b {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  text-align: right;
+  font: 500 10px/1.35 var(--font-body);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--faint);
-  text-align: center;
-  min-width: 0;
 }
 
-/* Combined scene map: the three registers stacked as one cloth
-   (Figures & Iconography, methodology) */
-.scroll-cloth { border: 1px solid var(--line); background: #fdfcf9; margin-top: 14px; }
-.scroll-cloth .ins-band { border: 0; }
-.scroll-cloth .map-sections { border: 0; }
-.scroll-cloth .cell { aspect-ratio: auto; height: clamp(58px, 10vw, 104px); }
+.map-lines b::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  width: 12px;
+  border-top: 1px solid rgba(180, 145, 70, 0.75);
+}
+
+.map-cloth {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: #fdfcf9;
+  line-height: 0;
+}
+
+.map-cloth > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.55) brightness(1.04) contrast(0.92);
+  opacity: 0.62;
+}
+
+/* The gold inscription bands, traced on the cloth */
+.map-ins {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(180, 145, 70, 0.8);
+  border-bottom: 1px solid rgba(180, 145, 70, 0.8);
+  background: rgba(214, 178, 92, 0.16);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* One clickable box per scene; the borders are the scene divisions */
+.map-scene {
+  position: absolute;
+  display: block;
+  text-decoration: none;
+  border: 1px solid rgba(28, 24, 20, 0.42);
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+/* the un-dimmed slice of painting, revealed on hover.
+   --bs / --bp are set per scene from its coords in scenes.json */
+.map-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("painting-full.jpg") var(--bp) / var(--bs) no-repeat;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.map-scene i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 1;
+  min-width: 17px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: rgba(248, 246, 241, 0.86);
+  color: var(--ink);
+  font: 600 11px/1.5 var(--font-display);
+  font-style: normal;
+  text-align: center;
+}
+
+.map-scene:hover,
+.map-scene:focus-visible {
+  z-index: 3;
+  border-color: var(--crimson);
+  box-shadow: 0 0 0 2px var(--crimson);
+  outline: none;
+}
+
+.map-scene:hover::before,
+.map-scene:focus-visible::before { opacity: 1; }
+
+.map-scene:hover i,
+.map-scene:focus-visible i { background: var(--crimson); color: var(--on-crimson); }
+
+/* the divide between section one and section two, running the whole cloth */
+.map-split {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--crimson);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Section one / section two, named under the cloth they divide */
+.map-secs {
+  display: flex;
+  min-width: 860px;
+  padding-left: 116px;
+  margin-top: 7px;
+}
+
+.map-secs span {
+  min-width: 0;
+  text-align: center;
+  font: 500 10px/1.35 var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--faint);
+}
+
+.map-hint { font-size: 12px; color: var(--faint); margin-top: 8px; }
+
+@media (min-width: 900px) { .map-hint { display: none; } }
+
 
 /* Numbered methodology steps */
 .method-list { color: var(--muted); padding-left: 22px; display: grid; gap: 12px; margin: 14px 0 0; }
