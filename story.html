@@ -55,11 +55,14 @@
     @media (prefers-reduced-motion: reduce) { .scroll-hint .arr { animation: none; } }
 
     /* ---- Chapter pages (registers) ---- */
+    /* A register break is a pause, not a blank screen. The old 56vh sat between
+       two scenes that each add their own padding, so the gap read as dead space. */
     .chapter {
-      min-height: 56vh; display: flex; flex-direction: column;
+      min-height: 0; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
-      padding: 0 var(--pad-x);
+      padding: clamp(40px, 7vh, 84px) var(--pad-x);
     }
+    .chapter + .s-scene { padding-top: 0; }
     .chapter .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 22px; }
     .chapter h2 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 500; }
 
@@ -287,7 +290,12 @@
               '<div class="s-hold">' +
                 '<p class="s-eyebrow">Scene ' + (i + 1) + " &middot; " + sectionLabel(s) + "</p>" +
                 '<div class="s-plate">' +
-                  '<img ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async" src="' + s.image + '" alt="Scene ' + (i + 1) + " of the painting: " + sectionLabel(s) + '">' +
+                  // width/height reserve the plate's space before the image loads.
+                  // Without them every lazy image reflows the page as it arrives, so a
+                  // deep link scrolls to a position that has moved by the time it lands.
+                  '<img ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async"' +
+                    (s.w && s.h ? ' width="' + s.w + '" height="' + s.h + '"' : "") +
+                    ' src="' + s.image + '" alt="Scene ' + (i + 1) + " of the painting: " + sectionLabel(s) + '">' +
                 '</div>' +
                 '<div class="s-caption">' +
                   '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
@@ -305,7 +313,11 @@
           const m = window.location.hash.match(/scene-(\d+)/);
           if (m) {
             const target = document.getElementById("scene-" + m[1]);
-            if (target) setTimeout(() => target.scrollIntoView({ behavior: "auto", block: "start" }), 60);
+            // "instant" on purpose: "auto" defers to CSS scroll-behavior (smooth),
+            // which animates the whole way down from scene one. Arriving from the
+            // scene map should land on the scene, not travel to it. The drawer's
+            // own #scene-N links stay smooth.
+            if (target) setTimeout(() => target.scrollIntoView({ behavior: "instant", block: "start" }), 60);
           }
         })
         .catch(err => {

@@ -11,7 +11,9 @@
       "height": 0.3089554829135622
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1884,
+    "h": 800
   },
   {
     "id": "r1-s1-2",
@@ -25,7 +27,9 @@
       "height": 0.3149838825801684
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1624,
+    "h": 800
   },
   {
     "id": "r1-s1-3",
@@ -39,7 +43,9 @@
       "height": 0.3146824625968381
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1191,
+    "h": 800
   },
   {
     "id": "r1-s1-4",
@@ -53,7 +59,9 @@
       "height": 0.31468246259683813
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1050,
+    "h": 822
   },
   {
     "id": "r1-s2-1",
@@ -67,7 +75,9 @@
       "height": 0.3164909824968199
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1853,
+    "h": 822
   },
   {
     "id": "r1-s2-2",
@@ -81,7 +91,9 @@
       "height": 0.3237250620967472
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1268,
+    "h": 841
   },
   {
     "id": "r1-s2-3",
@@ -95,7 +107,9 @@
       "height": 0.3246293220467381
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 445,
+    "h": 841
   },
   {
     "id": "r1-s2-4",
@@ -109,7 +123,9 @@
       "height": 0.3246293220467381
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1057,
+    "h": 841
   },
   {
     "id": "r2-s1-1",
@@ -123,7 +139,9 @@
       "height": 0.3201080222967835
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 642,
+    "h": 845
   },
   {
     "id": "r2-s1-2",
@@ -137,7 +155,9 @@
       "height": 0.3248422001178386
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1127,
+    "h": 845
   },
   {
     "id": "r2-s1-3",
@@ -151,7 +171,9 @@
       "height": 0.3199551935673934
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 2021,
+    "h": 861
   },
   {
     "id": "r2-s1-4",
@@ -165,7 +187,9 @@
       "height": 0.3240037431116347
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 588,
+    "h": 839
   },
   {
     "id": "r2-s1-5",
@@ -179,7 +203,9 @@
       "height": 0.328196028142654
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1371,
+    "h": 839
   },
   {
     "id": "r2-s2-1",
@@ -193,7 +219,9 @@
       "height": 0.3226861678161716
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1836,
+    "h": 857
   },
   {
     "id": "r2-s2-2",
@@ -207,7 +235,9 @@
       "height": 0.32340484525006064
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 902,
+    "h": 838
   },
   {
     "id": "r2-s2-3",
@@ -221,7 +251,9 @@
       "height": 0.32785489592070144
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1885,
+    "h": 859
   },
   {
     "id": "r3-s1-1",
@@ -235,7 +267,9 @@
       "height": 0.3601436356704676
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1222,
+    "h": 978
   },
   {
     "id": "r3-s1-2",
@@ -249,7 +283,9 @@
       "height": 0.3708375558867362
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1230,
+    "h": 962
   },
   {
     "id": "r3-s1-3",
@@ -263,7 +299,9 @@
       "height": 0.3632483221848681
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 2294,
+    "h": 962
   },
   {
     "id": "r3-s1-4",
@@ -277,7 +315,9 @@
       "height": 0.36221342668006784
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1003,
+    "h": 902
   },
   {
     "id": "r3-s2-1",
@@ -291,7 +331,9 @@
       "height": 0.3611785311752676
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1269,
+    "h": 902
   },
   {
     "id": "r3-s2-2",
@@ -305,7 +347,9 @@
       "height": 0.3549691581464667
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 1100,
+    "h": 944
   },
   {
     "id": "r3-s2-3",
@@ -319,6 +363,8 @@
       "height": 0.3539342626416663
     },
     "background": "",
-    "iconography": ""
+    "iconography": "",
+    "w": 2254,
+    "h": 923
   }
 ]

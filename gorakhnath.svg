@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
+  <!-- Gorakhnath in unbroken meditation on the seized Naags at Mrigasthali,
+       the hills behind him dry because the rain-bringers cannot move.
+       Watercolor washes with pen-and-ink accents; sits directly on the page. -->
+  <defs>
+    <filter id="gwash" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="10"/>
+      <feGaussianBlur stdDeviation="0.8"/>
+    </filter>
+    <filter id="gpen" x="-15%" y="-15%" width="130%" height="130%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045 0.06" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8"/>
+    </filter>
+  </defs>
+
+  <!-- ===================== the withheld sky and the dry hills ===================== -->
+  <circle cx="742" cy="92" r="40" fill="#c9982a" opacity="0.13" filter="url(#gwash)"/>
+  <circle cx="742" cy="92" r="24" fill="#c9982a" opacity="0.10" filter="url(#gwash)"/>
+
+  <ellipse cx="250" cy="352" rx="300" ry="104" fill="#8d8a5e" opacity="0.15" filter="url(#gwash)"/>
+  <ellipse cx="672" cy="360" rx="272" ry="88" fill="#b7a678" opacity="0.16" filter="url(#gwash)"/>
+  <ellipse cx="450" cy="376" rx="392" ry="46" fill="#c9b18c" opacity="0.24" filter="url(#gwash)"/>
+  <ellipse cx="450" cy="366" rx="196" ry="26" fill="#b06a3b" opacity="0.10" filter="url(#gwash)"/>
+
+  <!-- bare grasses, the last of them -->
+  <g filter="url(#gpen)" stroke="#8d8a5e" fill="none" stroke-linecap="round" opacity="0.55">
+    <path d="M126 358 q4 -22 -4 -34 M132 358 q10 -20 20 -28 M120 358 q-8 -18 -18 -24" stroke-width="1.3"/>
+    <path d="M784 352 q2 -20 -6 -30 M790 352 q10 -18 20 -24" stroke-width="1.3"/>
+    <path d="M690 366 q4 -16 -2 -26 M698 366 q9 -14 18 -19" stroke-width="1.2"/>
+  </g>
+
+  <!-- ===================== the coiled Naags, bound under him ===================== -->
+  <ellipse cx="450" cy="336" rx="164" ry="36" fill="#2a2320" opacity="0.13" filter="url(#gwash)"/>
+
+  <g filter="url(#gwash)" fill="none" stroke-linecap="round">
+    <path d="M298 318 q48 -22 98 -4 q52 18 104 -2 q48 -18 96 4" stroke="#6f7a4a" stroke-width="13" opacity="0.5"/>
+    <path d="M304 332 q46 -18 92 0 q54 20 110 -2 q44 -16 84 6" stroke="#4a5b66" stroke-width="14" opacity="0.55"/>
+    <path d="M300 346 q54 -16 104 2 q56 20 108 -4 q42 -16 82 4" stroke="#8a6a3b" stroke-width="13" opacity="0.5"/>
+    <path d="M316 358 q62 -12 122 4 q58 14 112 -6" stroke="#9d948a" stroke-width="11" opacity="0.42"/>
+    <!-- one coil rearing at the left, and one at the right: heads, still bound -->
+    <path d="M338 352 q-32 -20 -8 -40 q24 -18 46 2" stroke="#6b2f42" stroke-width="10" opacity="0.5"/>
+    <path d="M566 350 q34 -18 12 -38 q-22 -20 -46 -2" stroke="#31564a" stroke-width="10" opacity="0.5"/>
+  </g>
+  <g filter="url(#gwash)">
+    <ellipse cx="382" cy="316" rx="11" ry="7" transform="rotate(-16 382 316)" fill="#6b2f42" opacity="0.55"/>
+    <ellipse cx="518" cy="312" rx="11" ry="7" transform="rotate(16 518 312)" fill="#31564a" opacity="0.55"/>
+  </g>
+  <g filter="url(#gpen)" stroke="#4a3826" fill="none" stroke-linecap="round" opacity="0.6">
+    <path d="M338 352 q-32 -20 -8 -40 q24 -18 46 2" stroke-width="1.2"/>
+    <path d="M566 350 q34 -18 12 -38 q-22 -20 -46 -2" stroke-width="1.2"/>
+    <path d="M392 314 l9 -3 M528 310 l9 3" stroke-width="1"/>
+    <path d="M304 332 q46 -18 92 0 q54 20 110 -2 q44 -16 84 6" stroke-width="1.1" opacity="0.45"/>
+  </g>
+
+  <!-- ===================== the yogi ===================== -->
+  <g>
+    <g filter="url(#gwash)">
+      <!-- crossed legs, the seat of the meditation -->
+      <path d="M344 314 q12 -42 62 -52 q44 -9 88 0 q50 10 62 52 q-54 22 -106 22 q-52 0 -106 -22 Z" fill="#a03326" opacity="0.82"/>
+      <!-- torso -->
+      <path d="M404 280 q-12 -54 6 -82 q15 -24 40 -24 q25 0 40 24 q18 28 6 82 q-46 14 -92 0 Z" fill="#a03326" opacity="0.88"/>
+      <!-- the upper robe drawn across one shoulder -->
+      <path d="M414 190 q30 -18 62 -2 q10 32 18 62 q-30 12 -52 -2 q-16 -30 -28 -58 Z" fill="#8b2015" opacity="0.5"/>
+      <!-- arms folded down into the lap -->
+      <path d="M410 208 q-30 26 -24 58 q4 16 24 20 q6 -34 12 -58 Z" fill="#a03326" opacity="0.8"/>
+      <path d="M490 208 q30 26 24 58 q-4 16 -24 20 q-6 -34 -12 -58 Z" fill="#a03326" opacity="0.8"/>
+      <!-- hands at rest -->
+      <ellipse cx="450" cy="272" rx="26" ry="10" fill="#c99b72" opacity="0.92"/>
+      <!-- neck and head -->
+      <path d="M438 168 h24 v20 h-24 Z" fill="#c99b72" opacity="0.9"/>
+      <circle cx="450" cy="146" r="27" fill="#c99b72" opacity="0.92"/>
+      <!-- matted hair, crown and long falls -->
+      <path d="M421 144 q-3 -36 29 -36 q32 0 29 36 q-4 -22 -29 -22 q-25 0 -29 22 Z" fill="#5a3423" opacity="0.9"/>
+      <path d="M424 140 q-14 34 -9 66 q11 5 16 -2 q-8 -32 -1 -60 Z" fill="#5a3423" opacity="0.85"/>
+      <path d="M476 140 q14 34 9 66 q-11 5 -16 -2 q8 -32 1 -60 Z" fill="#5a3423" opacity="0.85"/>
+    </g>
+
+    <g filter="url(#gpen)" stroke="#4a3826" fill="none" stroke-linecap="round" opacity="0.85">
+      <path d="M344 314 q12 -42 62 -52 q44 -9 88 0 q50 10 62 52" stroke-width="1.6"/>
+      <path d="M404 280 q-12 -54 6 -82 q15 -24 40 -24 q25 0 40 24 q18 28 6 82" stroke-width="1.5"/>
+      <path d="M421 144 q-3 -36 29 -36 q32 0 29 36" stroke-width="1.3"/>
+      <!-- eyes closed -->
+      <path d="M436 148 q7 6 14 0 M464 148 q-7 6 -14 0" stroke-width="1.3"/>
+      <path d="M444 162 q6 3 12 0" stroke-width="1.1" opacity="0.7"/>
+      <!-- folds of the robe -->
+      <path d="M414 190 q30 -18 62 -2" stroke-width="1.2" opacity="0.7"/>
+      <path d="M424 214 q22 26 34 58 M440 210 q18 30 26 60" stroke-width="1.1" opacity="0.5"/>
+      <path d="M372 302 q40 -30 78 -30 q38 0 78 30" stroke-width="1.2" opacity="0.55"/>
+      <path d="M410 208 q-30 26 -24 58 M490 208 q30 26 24 58" stroke-width="1.2"/>
+      <path d="M426 272 q24 8 48 0" stroke-width="1.1" opacity="0.7"/>
+    </g>
+  </g>
+</svg>

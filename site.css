@@ -1009,16 +1009,24 @@ table.chart td { color: var(--muted); }
 
 .line-study h3 { margin: 0; font-size: 19px; }
 
-.line-field .k {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--faint);
-  margin-bottom: 4px;
+/* Each field is a different kind of reading of the same line, so they are
+   separated the way the FAQ separates questions: a crimson label over a
+   hairline rule, rather than three faint labels running together. */
+.line-field + .line-field {
+  border-top: 1px solid var(--hairline);
+  padding-top: 20px;
 }
 
-.line-field .v { font-size: 15px; color: var(--muted); }
+.line-field .k {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--crimson);
+  margin-bottom: 10px;
+}
+
+.line-field .v { font-size: 15px; color: var(--muted); line-height: 1.9; }
 
 /* FAQ (interview) */
 .qa-group {
