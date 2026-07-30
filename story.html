@@ -8,7 +8,16 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="site.css">
   <style>
-    /* ============ Story Mode · scrollytelling ============ */
+    /* ============ Story Mode ============
+       The painting is turned like the pages of a book: one card holds the
+       viewport, the next slides in from the right as the previous leaves to
+       the left, driven by vertical scroll.
+
+       Every card is exactly one viewport tall and the stage height is pure
+       CSS arithmetic, so a scene's scroll position is known before a single
+       image has loaded. That is what makes jumping to a scene exact. Nothing
+       here may be given a height that depends on an image. */
+
     .story-flow { position: relative; }
 
     /* Fixed top progress */
@@ -17,7 +26,7 @@
       pointer-events: none;
     }
     .story-progress { height: 2px; background: var(--hairline); }
-    .story-progress .fill { height: 100%; width: 0%; background: var(--crimson); transition: width .15s linear; }
+    .story-progress .fill { height: 100%; width: 0%; background: var(--crimson); }
     .story-counter {
       position: fixed; left: var(--pad-x); bottom: 22px; z-index: 40;
       font-family: var(--font-display); font-size: 15px; color: var(--ink);
@@ -38,10 +47,7 @@
       position: relative;
     }
     .book-cover .eyebrow { color: var(--crimson); letter-spacing: .22em; text-transform: uppercase; font-size: 12px; font-weight: 500; }
-    .book-cover h1 {
-      font-size: clamp(44px, 7vw, 96px); max-width: 12ch;
-      margin: 18px auto 22px; font-weight: 600;
-    }
+    .book-cover h1 { font-size: clamp(44px, 7vw, 96px); max-width: 12ch; margin: 18px auto 22px; font-weight: 600; }
     .book-cover .lede { max-width: 520px; color: var(--muted); font-size: 17px; }
     .book-cover .cover-art { margin: 30px auto 0; max-width: min(640px, 90vw); }
     .book-cover .cover-art img { width: 100%; display: block; }
@@ -52,60 +58,80 @@
     }
     .scroll-hint .arr { animation: hintdrop 1.8s ease-in-out infinite; font-size: 16px; color: var(--crimson); }
     @keyframes hintdrop { 0%,100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(7px); opacity: 1; } }
-    @media (prefers-reduced-motion: reduce) { .scroll-hint .arr { animation: none; } }
 
-    /* ---- Chapter pages (registers) ---- */
-    /* A register break is a pause, not a blank screen. The old 56vh sat between
-       two scenes that each add their own padding, so the gap read as dead space. */
-    .chapter {
-      min-height: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; text-align: center;
-      padding: clamp(40px, 7vh, 84px) var(--pad-x);
+    /* ---- The stage: one screen of scroll per card ----
+       The sticky child is one card tall (V = viewport - nav). It stops sticking
+       when the stage's bottom clears the window, so its travel is
+       stageHeight - window = n*V + nav - (V + nav) = (n-1)*V.
+       Exactly one card of scroll per card. --n is written on from JS. */
+    .story-stage {
+      position: relative;
+      height: calc(var(--n, 26) * (100vh - var(--nav-h)) + var(--nav-h));
     }
-    .chapter + .s-scene { padding-top: 0; }
-    .chapter .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 22px; }
-    .chapter h2 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 500; }
+    .story-viewport {
+      position: sticky; top: var(--nav-h);
+      height: calc(100vh - var(--nav-h));
+      overflow: hidden;
+    }
+    /* svh does not move when a phone's URL bar hides, so the stage stops
+       resizing mid-scroll and the card maths stay put. */
+    @supports (height: 100svh) {
+      .story-stage { height: calc(var(--n, 26) * (100svh - var(--nav-h)) + var(--nav-h)); }
+      .story-viewport { height: calc(100svh - var(--nav-h)); }
+    }
 
-    /* ---- Scenes: continuous scroll with breathing room ---- */
-    .s-scene { position: relative; padding: clamp(34px, 6vh, 70px) 0; }
-    .s-hold {
+    .s-card {
+      position: absolute; inset: 0;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 0 clamp(18px, 3.5vw, 48px);
+      gap: clamp(10px, 1.7vh, 22px);
+      padding: clamp(14px, 2.4vh, 34px) clamp(18px, 3.5vw, 48px);
+      text-align: center;
+      visibility: hidden;
+      transform: translate3d(100%, 0, 0);
+      backface-visibility: hidden;
     }
+    /* only the two or three cards in play are painted or promoted */
+    .s-card.live { visibility: visible; will-change: transform, opacity; }
+
     .s-eyebrow {
+      flex: none;
       font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
-      color: var(--crimson); font-weight: 500; text-align: center;
-      margin-bottom: clamp(14px, 2.2vh, 24px);
+      color: var(--crimson); font-weight: 500;
     }
     .s-plate {
-      max-width: 100%;
-      display: flex; flex-direction: column; align-items: center;
+      flex: 1 1 auto; min-height: 0;
+      width: 100%; max-width: min(1160px, 92vw);
+      display: flex; align-items: center; justify-content: center;
     }
     .s-plate img {
-      max-height: 68vh; max-width: min(1160px, 88vw);
-      width: auto; height: auto; display: block;
+      max-height: 100%; max-width: 100%;
+      width: auto; height: auto;
+      object-fit: contain;
       -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 62%, rgba(0,0,0,.55) 82%, transparent 97%);
       mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 62%, rgba(0,0,0,.55) 82%, transparent 97%);
     }
-    .s-caption {
-      margin-top: clamp(12px, 2vh, 22px); text-align: center; max-width: 620px;
-    }
+    .s-caption { flex: none; max-width: 620px; }
     .s-caption .s-text {
       font-family: var(--font-display); font-style: italic; font-weight: 400;
-      font-size: clamp(17px, 1.7vw, 21px); line-height: 1.55; color: var(--ink);
+      font-size: clamp(16px, 1.6vw, 20px); line-height: 1.55; color: var(--ink);
     }
     .s-caption .s-text.empty { display: none; }
     .s-caption .s-ctx {
-      display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--faint);
+      display: inline-block; margin-top: 8px; font-size: 12.5px; color: var(--faint);
       text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px;
     }
     .s-caption .s-ctx:hover { color: var(--crimson); border-color: var(--crimson); }
+
+    /* Register break, carried on a card of its own */
+    .s-card.s-chapter { justify-content: center; }
+    .s-chapter .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; }
+    .s-chapter h2 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 500; }
 
     /* ---- Colophon (end) ---- */
     .colophon {
       min-height: 92vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
-      padding: 0 var(--pad-x) 60px;
+      padding: 60px var(--pad-x);
     }
     .colophon .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 24px; }
     .colophon h2 { font-size: clamp(30px, 4.4vw, 52px); max-width: 16ch; font-weight: 500; }
@@ -146,15 +172,24 @@
     }
     .scene-drawer a:hover { background: var(--bg-raise); color: var(--ink); }
     .scene-drawer a.current { color: var(--crimson); }
-    .scene-drawer a img {
-      width: 64px; height: 40px; object-fit: cover; border-radius: 4px; flex: none;
-      opacity: .92;
-    }
+    .scene-drawer a img { width: 64px; height: 40px; object-fit: cover; border-radius: 4px; flex: none; opacity: .92; }
     .scene-drawer .dv {
       font-family: var(--font-display); font-size: 12px; color: var(--faint);
       letter-spacing: .18em; text-transform: uppercase; margin: 16px 8px 6px;
     }
     @media (max-width: 640px) { .scene-drawer { width: 82vw; } }
+
+    /* On a phone the fixed drawer tab and scene counter sit over the card, so
+       the card keeps its text clear of both. */
+    @media (max-width: 700px) {
+      .s-card { padding-top: 62px; padding-bottom: 66px; }
+      .s-eyebrow { font-size: 11px; letter-spacing: .12em; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-hint .arr { animation: none; }
+      .s-card { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -201,7 +236,7 @@
     <div class="group"><a href="about.html">About</a></div>
   </div>
 
-  <main class="story-flow" id="storyFlow">
+  <main class="story-flow">
 
     <div class="story-top"><div class="story-progress"><div class="fill" id="progressFill"></div></div></div>
     <div class="story-counter" id="storyCounter">Scene <span id="curNum">1</span> <span class="total">/ <span id="totNum">&hellip;</span></span></div>
@@ -215,7 +250,9 @@
       <div class="scroll-hint"><span>Scroll to begin</span><span class="arr">&darr;</span></div>
     </header>
 
-    <div id="sceneMount"></div>
+    <div class="story-stage" id="storyStage">
+      <div class="story-viewport" id="storyViewport"></div>
+    </div>
 
     <!-- Colophon -->
     <section class="colophon">
@@ -241,85 +278,37 @@
     (function () {
       "use strict";
 
-      const mount = document.getElementById("sceneMount");
+      const stage = document.getElementById("storyStage");
+      const viewport = document.getElementById("storyViewport");
       const fill = document.getElementById("progressFill");
       const counter = document.getElementById("storyCounter");
-      const cur = document.getElementById("curNum");
-      const tot = document.getElementById("totNum");
+      const curEl = document.getElementById("curNum");
+      const totEl = document.getElementById("totNum");
+      const drawer = document.getElementById("sceneDrawer");
+      const tab = document.getElementById("drawerTab");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      const registers = {
-        "Row 1": { title: "Register One" },
-        "Row 2": { title: "Register Two" },
-        "Row 3": { title: "Register Three" }
-      };
-      const ordinals = ["one", "two", "three"];
+      const REGISTERS = { "Row 1": "Register One", "Row 2": "Register Two", "Row 3": "Register Three" };
+      const ORDINALS = ["one", "two", "three"];
 
-      function sectionLabel(s) {
-        const m = s.section.match(/Row (\d), Section (\d)/);
-        if (!m) return s.section;
-        return "Register " + (ordinals[+m[1] - 1] || m[1]) + " · Section " + m[2];
+      // cards[]: every page of the book, register breaks included.
+      // .scene is the 1-based scene number, or 0 for a register break.
+      const cards = [];
+      let st = null;            // the one ScrollTrigger; single source of truth
+      let lastIndex = -1;
+      let hashScene = 0;
+      let programmatic = false; // set while we drive the scroll ourselves
+      let scrollTween = null;
+
+      function sectionLabel(section) {
+        const m = section.match(/Row (\d), Section (\d)/);
+        if (!m) return section;
+        return "Register " + (ORDINALS[+m[1] - 1] || m[1]) + " · Section " + m[2];
       }
 
       fetch("scenes.json")
         .then(r => r.json())
-        .then(scenes => {
-          tot.textContent = scenes.length;
-          let lastRow = "";
-          const frag = document.createDocumentFragment();
-
-          scenes.forEach((s, i) => {
-            const row = (s.section.match(/Row \d/) || [""])[0];
-            if (row && row !== lastRow && registers[row]) {
-              lastRow = row;
-              const ch = document.createElement("section");
-              ch.className = "chapter";
-              ch.innerHTML =
-                '<p class="orn">॥ ✽ ॥</p>' +
-                '<h2>' + registers[row].title + "</h2>";
-              frag.appendChild(ch);
-            }
-
-            const sec = document.createElement("section");
-            sec.className = "s-scene";
-            sec.id = "scene-" + (i + 1);
-            sec.dataset.i = i;
-
-            const hasText = s.background && s.background.trim();
-            sec.innerHTML =
-              '<div class="s-hold">' +
-                '<p class="s-eyebrow">Scene ' + (i + 1) + " &middot; " + sectionLabel(s) + "</p>" +
-                '<div class="s-plate">' +
-                  // width/height reserve the plate's space before the image loads.
-                  // Without them every lazy image reflows the page as it arrives, so a
-                  // deep link scrolls to a position that has moved by the time it lands.
-                  '<img ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async"' +
-                    (s.w && s.h ? ' width="' + s.w + '" height="' + s.h + '"' : "") +
-                    ' src="' + s.image + '" alt="Scene ' + (i + 1) + " of the painting: " + sectionLabel(s) + '">' +
-                '</div>' +
-                '<div class="s-caption">' +
-                  '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
-                  '<a class="s-ctx" href="explore.html#scene=' + s.id + '">View this scene in the full painting</a>' +
-                '</div>' +
-              '</div>';
-            frag.appendChild(sec);
-          });
-
-          mount.appendChild(frag);
-          buildDrawer(scenes);
-          initScrolly(scenes.length);
-
-          // Deep link: story.html#scene-N
-          const m = window.location.hash.match(/scene-(\d+)/);
-          if (m) {
-            const target = document.getElementById("scene-" + m[1]);
-            // "instant" on purpose: "auto" defers to CSS scroll-behavior (smooth),
-            // which animates the whole way down from scene one. Arriving from the
-            // scene map should land on the scene, not travel to it. The drawer's
-            // own #scene-N links stay smooth.
-            if (target) setTimeout(() => target.scrollIntoView({ behavior: "instant", block: "start" }), 60);
-          }
-        })
+        .then(build)
         .catch(err => {
           console.error("Failed to load scenes.json:", err);
           const p = document.createElement("p");
@@ -327,113 +316,289 @@
           p.textContent = window.location.protocol === "file:"
             ? "This page was opened directly as a file. Double-click Start Website.command in the New Website folder, then visit http://localhost:8765/story.html."
             : "The scenes could not be loaded.";
-          mount.appendChild(p);
+          viewport.appendChild(p);
         });
 
-      function buildDrawer(scenes) {
-        const drawer = document.getElementById("sceneDrawer");
-        const tab = document.getElementById("drawerTab");
-        const ords = { "Row 1": "Register One", "Row 2": "Register Two", "Row 3": "Register Three" };
+      function build(scenes) {
+        totEl.textContent = scenes.length;
+        const frag = document.createDocumentFragment();
         let lastRow = "";
+
         scenes.forEach((s, i) => {
+          const row = (s.section.match(/Row \d/) || [""])[0];
+          if (row && row !== lastRow && REGISTERS[row]) {
+            lastRow = row;
+            frag.appendChild(makeChapter(REGISTERS[row]));
+          }
+          frag.appendChild(makeScene(s, i + 1));
+        });
+
+        viewport.appendChild(frag);
+        stage.style.setProperty("--n", cards.length);
+        buildDrawer(scenes);
+        initScroll();
+      }
+
+      function makeChapter(title) {
+        const el = document.createElement("div");
+        el.className = "s-card s-chapter";
+        el.innerHTML = '<p class="orn">॥ ✽ ॥</p><h2>' + title + "</h2>";
+        cards.push({ el: el, scene: 0, img: null, src: "", live: false });
+        return el;
+      }
+
+      function makeScene(s, n) {
+        const el = document.createElement("div");
+        el.className = "s-card";
+        el.id = "scene-" + n;
+        const label = sectionLabel(s.section);
+        const hasText = s.background && s.background.trim();
+        el.innerHTML =
+          '<p class="s-eyebrow">Scene ' + n + " · " + label + "</p>" +
+          '<div class="s-plate">' +
+            // no src yet: images are attached only near the current card, so a
+            // phone never decodes twenty-three plates at once
+            '<img decoding="async" alt="Scene ' + n + " of the painting: " + label + '">' +
+          "</div>" +
+          '<div class="s-caption">' +
+            '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
+            '<a class="s-ctx" href="explore.html#scene=' + s.id + '">View this scene in the full painting</a>' +
+          "</div>";
+        cards.push({ el: el, scene: n, img: el.querySelector("img"), src: s.image, live: false });
+        return el;
+      }
+
+      /* ---- the one place scroll position and card position are related ---- */
+
+      function scrollForCard(i) {
+        if (!st || cards.length < 2) return 0;
+        return st.start + (i / (cards.length - 1)) * (st.end - st.start);
+      }
+
+      function cardForScene(n) {
+        for (let i = 0; i < cards.length; i++) if (cards[i].scene === n) return i;
+        return -1;
+      }
+
+      function attachImages(i) {
+        for (let k = Math.max(0, i - 2); k <= Math.min(cards.length - 1, i + 2); k++) {
+          const c = cards[k];
+          if (c.img && !c.img.getAttribute("src")) c.img.setAttribute("src", c.src);
+        }
+      }
+
+      // t is a float card position: 4.35 means a third of the way from card 4 to 5
+      function render(t) {
+        const i = Math.floor(t);
+        const f = t - i;
+        for (let k = 0; k < cards.length; k++) {
+          const c = cards[k];
+          if (k < i - 1 || k > i + 2) {
+            if (c.live) { c.el.classList.remove("live"); c.live = false; }
+            continue;
+          }
+          if (!c.live) { c.el.classList.add("live"); c.live = true; }
+          let x, o;
+          if (k < i) { x = -100; o = 0; }
+          else if (k === i) { x = -f * 100; o = 1 - f * 0.7; }
+          else if (k === i + 1) { x = (1 - f) * 100; o = 0.3 + f * 0.7; }
+          else { x = 100; o = 0; }
+          c.el.style.transform = "translate3d(" + x + "%,0,0)";
+          c.el.style.opacity = o;
+        }
+
+        const index = Math.max(0, Math.min(cards.length - 1, Math.round(t)));
+        if (index !== lastIndex) {
+          lastIndex = index;
+          attachImages(index);
+          const scene = cards[index].scene;
+          if (scene) {
+            curEl.textContent = scene;
+            counter.classList.add("show");
+            if (!programmatic && scene !== hashScene) {
+              hashScene = scene;
+              history.replaceState(null, "", "#scene-" + scene);
+            }
+          } else {
+            counter.classList.remove("show");
+          }
+          const links = drawer.querySelectorAll("a");
+          for (let j = 0; j < links.length; j++) {
+            links[j].classList.toggle("current", +links[j].dataset.scene === scene);
+          }
+        }
+      }
+
+      function goToCard(i, animate) {
+        if (!st) return;
+        i = Math.max(0, Math.min(cards.length - 1, i));
+        attachImages(i);
+
+        const y = Math.round(scrollForCard(i));
+        programmatic = true;
+        if (scrollTween) { scrollTween.kill(); scrollTween = null; }
+
+        function land() {
+          // behavior:"instant" matters: site.css sets scroll-behavior:smooth on
+          // html, so a bare scrollTo(0,y) would quietly animate and could be
+          // interrupted. This must be an exact, immediate landing.
+          window.scrollTo({ top: y, behavior: "instant" });
+          scrollTween = null;
+          programmatic = false;
+          const scene = cards[i].scene;
+          if (scene) {
+            hashScene = scene;
+            history.replaceState(null, "", "#scene-" + scene);
+          }
+        }
+
+        // We never hand the travel to the browser's own smooth scrolling: that
+        // can be cancelled or interrupted mid-flight, which is how this used to
+        // stop on the wrong scene. We drive it ourselves and snap on landing.
+        if (!animate || reduceMotion || !window.gsap) {
+          land();
+          return;
+        }
+        const proxy = { y: window.scrollY };
+        scrollTween = gsap.to(proxy, {
+          y: y,
+          duration: 0.7,
+          ease: "power2.inOut",
+          onUpdate: function () { window.scrollTo({ top: proxy.y, behavior: "instant" }); },
+          onComplete: land
+        });
+      }
+
+      function goToScene(n, animate) {
+        const i = cardForScene(n);
+        if (i >= 0) goToCard(i, animate);
+      }
+
+      // any real scrolling gesture wins over an animation in progress
+      function cancelScrollTween() {
+        if (!scrollTween) return;
+        scrollTween.kill();
+        scrollTween = null;
+        programmatic = false;
+      }
+
+      function initScroll() {
+        if (!window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.config({ ignoreMobileResize: true });
+
+        st = ScrollTrigger.create({
+          trigger: stage,
+          start: "top top",
+          end: "bottom bottom",
+          onUpdate: function (self) {
+            fill.style.width = (self.progress * 100) + "%";
+            render(self.progress * (cards.length - 1));
+          },
+          onRefresh: function (self) {
+            render(self.progress * (cards.length - 1));
+          }
+        });
+
+        // The cards are absolutely positioned and the stage height is pure CSS,
+        // so nothing above can move: st.start and st.end are correct as soon as
+        // the trigger exists. That is why the deep link needs no timeout.
+        ScrollTrigger.refresh();
+        render(0);
+
+        const m = window.location.hash.match(/scene-(\d+)/);
+        if (m) {
+          hashScene = +m[1];
+          goToScene(hashScene, false);
+        }
+
+        addEventListener("wheel", cancelScrollTween, { passive: true });
+        addEventListener("touchstart", cancelScrollTween, { passive: true });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.metaKey || e.ctrlKey || e.altKey) return;
+          let step = 0;
+          if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "PageDown") step = 1;
+          if (e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "PageUp") step = -1;
+          if (!step) return;
+          const inStage = scrollY >= st.start - 4 && scrollY <= st.end + 4;
+          if (!inStage) return;
+          e.preventDefault();
+          goToCard(lastIndex + step, true);
+        });
+
+        if (!reduceMotion) {
+          gsap.from("#cover > *", { autoAlpha: 0, y: 24, stagger: 0.09, duration: 0.8, ease: "power2.out" });
+          gsap.from(".colophon > *", {
+            autoAlpha: 0, y: 24, stagger: 0.08, duration: 0.7, ease: "power2.out",
+            scrollTrigger: { trigger: ".colophon", start: "top 78%", once: true }
+          });
+        }
+      }
+
+      function buildDrawer(scenes) {
+        let lastRow = "";
+        scenes.forEach(function (s, i) {
           const row = (s.section.match(/Row \d/) || [""])[0];
           if (row && row !== lastRow) {
             lastRow = row;
             const dv = document.createElement("p");
             dv.className = "dv";
-            dv.textContent = ords[row] || row;
+            dv.textContent = REGISTERS[row] || row;
             drawer.appendChild(dv);
           }
           const a = document.createElement("a");
           a.href = "#scene-" + (i + 1);
-          a.dataset.i = i;
+          a.dataset.scene = i + 1;
           a.innerHTML = '<img loading="lazy" src="scene-thumbs/' + s.id + '.jpg" alt=""><span>Scene ' + (i + 1) + "</span>";
-          a.addEventListener("click", () => {
-            drawer.classList.remove("open");
-            tab.setAttribute("aria-expanded", "false");
+          a.addEventListener("click", function (e) {
+            // Never let the browser do the fragment jump. Its smooth scroll can
+            // be cancelled mid-flight, which is exactly how this used to land on
+            // the wrong scene. We scroll to a computed offset instead.
+            e.preventDefault();
+            closeDrawer();
+            goToScene(i + 1, true);
           });
           drawer.appendChild(a);
         });
-        tab.addEventListener("click", () => {
+
+        tab.addEventListener("click", function () {
           const open = drawer.classList.toggle("open");
           tab.setAttribute("aria-expanded", open ? "true" : "false");
         });
-        document.addEventListener("keydown", e => {
-          if (e.key === "Escape" && drawer.classList.contains("open")) {
-            drawer.classList.remove("open");
-            tab.setAttribute("aria-expanded", "false");
-          }
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeDrawer();
         });
-        document.addEventListener("click", e => {
-          if (drawer.classList.contains("open") && !drawer.contains(e.target) && !tab.contains(e.target)) {
-            drawer.classList.remove("open");
-            tab.setAttribute("aria-expanded", "false");
-          }
+        document.addEventListener("click", function (e) {
+          if (drawer.classList.contains("open") && !drawer.contains(e.target) && !tab.contains(e.target)) closeDrawer();
         });
       }
 
-      function initScrolly(total) {
-        const sceneEls = Array.from(document.querySelectorAll(".s-scene"));
-
-        // Progress + counter
-        function onScroll() {
-          const first = sceneEls[0], last = sceneEls[sceneEls.length - 1];
-          if (!first) return;
-          const start = first.offsetTop - innerHeight * 0.5;
-          const end = last.offsetTop + last.offsetHeight - innerHeight;
-          const p = Math.max(0, Math.min(1, (scrollY - start) / (end - start)));
-          fill.style.width = (p * 100) + "%";
-
-          let active = -1;
-          for (const el of sceneEls) {
-            const r = el.getBoundingClientRect();
-            if (r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5) { active = +el.dataset.i; break; }
-          }
-          if (active >= 0) {
-            cur.textContent = active + 1;
-            counter.classList.add("show");
-            history.replaceState(null, "", "#scene-" + (active + 1));
-          } else {
-            counter.classList.remove("show");
-          }
-          document.querySelectorAll(".scene-drawer a").forEach(a => {
-            a.classList.toggle("current", +a.dataset.i === active);
-          });
-        }
-        addEventListener("scroll", onScroll, { passive: true });
-        onScroll();
-
-        // Keyboard: arrows step through scenes
-        document.addEventListener("keydown", e => {
-          if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" && e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-          const fwd = e.key === "ArrowRight" || e.key === "ArrowDown";
-          let active = 0;
-          for (const el of sceneEls) {
-            if (el.getBoundingClientRect().top < innerHeight * 0.5) active = +el.dataset.i;
-          }
-          const next = Math.max(0, Math.min(total - 1, active + (fwd ? 1 : -1)));
-          e.preventDefault();
-          sceneEls[next].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-        });
-
-        // Gentle one-time reveals; scenes never fade back out while scrolling
-        if (window.gsap && window.ScrollTrigger && !reduceMotion) {
-          gsap.registerPlugin(ScrollTrigger);
-          ScrollTrigger.config({ ignoreMobileResize: true });
-          sceneEls.forEach(el => {
-            gsap.from(el.querySelector(".s-hold"), {
-              autoAlpha: 0, y: 26, duration: 0.7, ease: "power2.out",
-              scrollTrigger: { trigger: el, start: "top 82%", once: true }
-            });
-          });
-          document.querySelectorAll(".chapter, .colophon").forEach(el => {
-            gsap.from(el.children, {
-              autoAlpha: 0, y: 26, stagger: 0.08, duration: 0.7, ease: "power2.out",
-              scrollTrigger: { trigger: el, start: "top 78%", once: true }
-            });
-          });
-        }
+      function closeDrawer() {
+        drawer.classList.remove("open");
+        tab.setAttribute("aria-expanded", "false");
       }
+
+      // Small handle for jumping in from elsewhere, and for verifying that a
+      // jump actually lands where it claims to.
+      window.storyMode = {
+        goToScene: goToScene,
+        goToCard: goToCard,
+        sceneCount: function () { return cards.filter(function (c) { return c.scene; }).length; },
+        cardCount: function () { return cards.length; },
+        current: function () { return cards[lastIndex] ? cards[lastIndex].scene : 0; },
+        offsetOf: function (n) {
+          const i = cardForScene(n);
+          return i < 0 ? null : cards[i].el.getBoundingClientRect().left;
+        }
+      };
+
+      // Arriving at #scene-N from another page while already on this page
+      window.addEventListener("hashchange", function () {
+        if (programmatic) return;
+        const m = window.location.hash.match(/scene-(\d+)/);
+        if (m) goToScene(+m[1], true);
+      });
     })();
   </script>
 </body>

@@ -70,9 +70,12 @@
       </div>
       <div class="hero-veil"></div>
       <div class="hero-center">
-        <p class="hero-kicker">Digital Preservation of Newari History</p>
+        <p class="hero-kicker">Digital Preservation of Newar History</p>
         <h1 class="hero-title">The Bunga Dyo Painting</h1>
-        <a class="hero-cta" href="explore.html">Explore the painting</a>
+        <div class="hero-actions">
+          <a class="hero-cta" href="explore.html">Explore the painting</a>
+          <a class="hero-cta" href="legend.html">Read the legend</a>
+        </div>
       </div>
       <button class="hero-pause" id="heroPause" aria-pressed="false" aria-label="Pause the background slideshow" title="Pause slideshow">
         <svg class="ic-pause" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3.4" height="12" rx="1"></rect><rect x="8.6" y="1" width="3.4" height="12" rx="1"></rect></svg>
@@ -89,7 +92,7 @@
           <p class="subtitle">A story told across two meters of cloth</p>
         </div>
         <div class="prose" data-reveal>
-          <p>Painted in Nepal in 1712, this <strong>bilampau</strong>, a horizontal narrative painting of the Newar community, tells the legend of <strong>Bunga Dyo</strong>, a deity beloved in the Kathmandu Valley since the 7th century. He is known by many names: Karunamaya, the Compassionate One; Rato Matsyendranath (or Rato Macchindranath); and Bunga Dyo, the god of Bungamati. Across three registers of the painting, each episode follows the next from left to right: gods and kings, processions and offerings, all rendered on the cloth of the bilampau. These scenes work together like a storybook, conveying the legend of the Rato Macchindranath festival to its viewers.</p>
+          <p>Painted in Nepal in 1712, this bilampau, a horizontal narrative painting of the Newar community, recounts the legend of Bunga Dyo, a deity beloved in the Kathmandu Valley since the 7th century. He is known by many names: Karunamaya, the Compassionate One; Rato Matsyendranath (or Rato Macchindranath); Avalokiteshvara (or Avalokiteshwor); Lokeshwor; and, in Patan, Bunga Dyo, the god of Bungamati. Across three registers of the painting, each episode follows the next from left to right: gods and kings, processions and offerings, all rendered on the cloth of the bilampau. These scenes work together like a storybook, conveying the legend of the Rato Macchindranath festival to its viewers.</p>
           <p>Each register includes a line of inscriptions written in an old form of Prachalit, the Newari script, and narrates the scenes it crowns. Time has worn parts of the cloth painting and its writing, but with transliteration and translation, the story it preserves can be read again. This archive presents the painting in high resolution, with every scene and every inscription, together with the research that makes them legible: a study undertaken with the guidance of professors of Newar Buddhism in Nepal.</p>
         </div>
       </div>
@@ -325,7 +328,7 @@
       }
     });
 
-    gsap.from([".hero-kicker", ".hero-title", ".hero-cta"], {
+    gsap.from([".hero-kicker", ".hero-title", ".hero-actions"], {
       autoAlpha: 0, y: 26, duration: 1.1, stagger: 0.12, ease: "power3.out", delay: 0.3, clearProps: "transform"
     });
 

@@ -515,8 +515,20 @@ hr.rule { border: 0; border-top: 1px solid var(--line); }
   max-width: 16ch;
 }
 
+/* The gap under the title belongs to the row, not to each button: an inline
+   <a> ignores margin-top, so with two buttons the spacing disappeared. */
+.hero-actions {
+  margin-top: clamp(26px, 3.4vw, 40px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 1.4vw, 16px);
+  /* without this the row is shrink-to-fit inside the centred column, so it
+     never wraps on a narrow screen and drags the whole hero off-centre */
+  max-width: 100%;
+}
+
 .hero-cta {
-  margin-top: clamp(24px, 3vw, 36px);
   padding: 13px 28px;
   border: 1px solid rgba(246, 239, 227, 0.8);
   color: #f6efe3;
@@ -1048,6 +1060,10 @@ table.chart td { color: var(--muted); }
 @media (min-width: 900px) { .map-hint { display: none; } }
 
 
+/* Watercolor plate opening a telling of the legend */
+.legend-plate { margin: 2px 0 24px; }
+.legend-plate img { width: 100%; height: auto; }
+
 /* Numbered methodology steps */
 .method-list { color: var(--muted); padding-left: 22px; display: grid; gap: 12px; margin: 14px 0 0; }
 .method-list li::marker { color: var(--crimson); font-weight: 600; }
@@ -1240,210 +1256,6 @@ table.chart td { color: var(--muted); }
   color: #9d948a;
   letter-spacing: 0.04em;
   pointer-events: none;
-}
-
-/* ===========================================================================
-   Story Mode
-   ========================================================================== */
-
-.story-main {
-  padding: calc(var(--nav-h) + 28px) var(--pad-x) 26px;
-  max-width: 1400px;
-  margin: 0 auto;
-  min-height: calc(100vh - 160px);
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 18px;
-}
-
-.story-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.story-counter {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.story-counter .total { color: var(--faint); font-weight: 400; }
-
-.story-progress {
-  flex: 1 1 200px;
-  max-width: 420px;
-  height: 1px;
-  background: var(--line);
-  position: relative;
-  top: -4px;
-}
-
-.story-progress .fill {
-  position: absolute;
-  left: 0; top: -0.5px;
-  height: 2px;
-  background: var(--crimson);
-  width: 0;
-  transition: width 0.4s ease;
-}
-
-.story-stage {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(28px, 4vw, 64px);
-  align-items: start;
-}
-
-@media (max-width: 940px) {
-  .story-stage { grid-template-columns: 1fr; }
-}
-
-.scene-figure { position: relative; }
-
-.scene-figure .frame {
-  position: relative;
-  border: 1px solid var(--line);
-  background: #fdfcf9;
-  height: min(60vh, 600px);
-  overflow: hidden;
-}
-
-/* Two stacked images; JS pushes one out while the other slides in.
-   Explicit width/height are required: an absolutely positioned img with
-   only insets renders at its natural size and gets cropped. */
-.scene-figure .frame img {
-  --frame-pad: clamp(10px, 1.4vw, 18px);
-  position: absolute;
-  inset: var(--frame-pad);
-  width: calc(100% - var(--frame-pad) * 2);
-  height: calc(100% - var(--frame-pad) * 2);
-  object-fit: contain;
-  opacity: 0;
-  will-change: transform, opacity;
-}
-
-.scene-figure .frame img.loaded {
-  opacity: 1;
-}
-
-.scene-controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.scene-controls button {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: rgba(248, 246, 241, 0.92);
-  color: var(--ink);
-  font-size: 17px;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
-}
-
-.scene-controls button:hover:not(:disabled) { background: var(--ink); color: var(--bg); }
-.scene-controls button:disabled { opacity: 0.25; cursor: default; }
-
-.scene-panel { display: grid; gap: 16px; align-content: start; }
-
-.scene-panel .scene-title { font-size: clamp(26px, 3vw, 38px); }
-
-.scene-panel .scene-section {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--crimson);
-  font-weight: 500;
-}
-
-.scene-field { border-top: 1px solid var(--hairline); padding-top: 14px; }
-
-.scene-field .k {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--faint);
-  margin-bottom: 6px;
-}
-
-.scene-field .v { font-size: 15px; color: var(--muted); }
-.scene-field .v.empty { font-family: var(--font-display); font-style: italic; color: var(--faint); }
-
-.scene-panel .in-context { margin-top: 6px; }
-
-.scene-field .arrow-link { margin-top: 10px; font-size: 13px; }
-
-/* Story Mode, dark (continuous with the Full View room) */
-body.dark .story-counter .total { color: #9d948a; }
-body.dark .story-progress { background: rgba(233, 226, 214, 0.18); }
-body.dark .story-progress .fill { background: #e0a89a; }
-body.dark .scene-figure .frame { background: #1d1915; border-color: rgba(233, 226, 214, 0.14); }
-body.dark .scene-panel .scene-section { color: #e0a89a; }
-body.dark .scene-field { border-top-color: rgba(233, 226, 214, 0.12); }
-body.dark .scene-field .k { color: #9d948a; }
-body.dark .scene-field .v { color: #bdb4a7; }
-body.dark .scene-field .v.empty { color: #7d746a; }
-body.dark .arrow-link { color: #e9e2d6; }
-body.dark .scene-controls button {
-  background: rgba(29, 25, 21, 0.9);
-  border-color: rgba(233, 226, 214, 0.25);
-  color: #e9e2d6;
-}
-body.dark .scene-controls button:hover:not(:disabled) { background: #e9e2d6; color: #14110e; }
-body.dark .filmstrip-wrap { background: #14110e; border-top-color: rgba(233, 226, 214, 0.14); }
-body.dark .filmstrip button { background: #1d1915; border-color: rgba(233, 226, 214, 0.14); }
-body.dark .filmstrip button.active { border-color: #e0a89a; box-shadow: 0 0 0 1px #e0a89a; }
-
-/* Filmstrip */
-.filmstrip-wrap {
-  border-top: 1px solid var(--line);
-  padding: 16px var(--pad-x) 22px;
-  background: var(--bg);
-}
-
-.filmstrip {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  padding-bottom: 6px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.filmstrip button {
-  flex: 0 0 auto;
-  border: 1px solid var(--line);
-  background: #fdfcf9;
-  padding: 3px;
-  cursor: pointer;
-  position: relative;
-  transition: border-color 0.15s ease;
-}
-
-.filmstrip button img { height: 56px; width: auto; display: block; opacity: 0.85; transition: opacity 0.15s ease; }
-
-.filmstrip button:hover img { opacity: 1; }
-
-.filmstrip button.active { border-color: var(--crimson); box-shadow: 0 0 0 1px var(--crimson); }
-.filmstrip button.active img { opacity: 1; }
-
-.filmstrip button .n {
-  position: absolute;
-  left: 4px; top: 4px;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  background: rgba(28, 24, 20, 0.72);
-  color: #f3ede1;
-  padding: 1px 5px;
 }
 
 /* ===========================================================================

@@ -97,8 +97,8 @@
       <path d="M247 198 h13 v18 h-13 Z" fill="#c99b72" opacity="0.88"/>
       <circle cx="254" cy="186" r="17" fill="#c99b72" opacity="0.9"/>
       <!-- the cloth wound round his head -->
-      <path d="M236 184 q-2 -22 18 -22 q20 0 19 20 q-7 -11 -19 -11 q-13 0 -18 13 Z" fill="#f2ead8" opacity="0.9"/>
-      <path d="M238 180 q-11 5 -9 16 q4 9 12 6" fill="#f2ead8" opacity="0.75"/>
+      <path d="M235 189 q-4 -32 19 -32 q23 0 20 32 q-20 -9 -39 0 Z" fill="#f2ead8" opacity="0.9"/>
+      <path d="M237 184 q-12 6 -10 18 q4 9 13 6" fill="#f2ead8" opacity="0.75"/>
     </g>
 
     <g filter="url(#dpen)" stroke="#4a3826" fill="none" stroke-linecap="round" opacity="0.8">
@@ -107,7 +107,8 @@
       <path d="M244 298 q-4 30 -2 58 M264 298 q5 30 4 60" stroke-width="1.2" opacity="0.7"/>
       <path d="M240 222 L216 196 L241 179" stroke-width="1.3" opacity="0.7"/>
       <path d="M270 222 q14 32 16 58" stroke-width="1.3" opacity="0.7"/>
-      <path d="M236 184 q-2 -22 18 -22 q20 0 19 20" stroke-width="1.3"/>
+      <path d="M235 189 q-4 -32 19 -32 q23 0 20 32" stroke-width="1.3"/>
+      <path d="M236 182 q18 -7 37 0" stroke-width="1" opacity="0.6"/>
       <!-- brow drawn down, mouth set: the look of a man counting the years -->
       <path d="M247 187 q6 -3 10 -1 M263 188 q5 -2 7 0" stroke-width="1.2" opacity="0.85"/>
       <path d="M251 199 q7 -3 12 1" stroke-width="1.2" opacity="0.75"/>
