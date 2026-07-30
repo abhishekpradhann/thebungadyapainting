@@ -9,15 +9,14 @@
   <link rel="stylesheet" href="site.css">
   <style>
     /* ============ Story Mode ============
-       The painting is turned like the pages of a book, sideways: the scenes
-       are one screen-tall strip that scrolls horizontally, on laptop and on
-       phone. The page itself stays three screens tall (cover, scenes,
-       colophon), so scrolling up from the scenes reaches the title at once.
+       The painting is turned like the pages of a book: one card holds the
+       viewport, the next slides in from the right as the previous leaves to
+       the left, driven by vertical scroll.
 
-       Every card is exactly one strip-width wide, so a scene's scroll offset
-       is known from CSS alone, before a single image has loaded. That is what
-       makes jumping to a scene exact. Nothing here may be given a width that
-       depends on an image. */
+       Every card is exactly one viewport tall and the stage height is pure
+       CSS arithmetic, so a scene's scroll position is known before a single
+       image has loaded. That is what makes jumping to a scene exact. Nothing
+       here may be given a height that depends on an image. */
 
     .story-flow { position: relative; }
 
@@ -60,64 +59,39 @@
     .scroll-hint .arr { animation: hintdrop 1.8s ease-in-out infinite; font-size: 16px; color: var(--crimson); }
     @keyframes hintdrop { 0%,100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(7px); opacity: 1; } }
 
-    /* ---- The scenes: one screen tall, scrolled sideways ----
-       This is a real horizontal scroll container, not vertical scroll dressed
-       up as sideways movement. The page itself stays three screens tall, so
-       scrolling up from the scenes reaches the title immediately, and the
-       strip keeps its own scrolling to itself. */
-    .story-strip-wrap {
+    /* ---- The stage: one screen of scroll per card ----
+       The sticky child is one card tall (V = viewport - nav). It stops sticking
+       when the stage's bottom clears the window, so its travel is
+       stageHeight - window = n*V + nav - (V + nav) = (n-1)*V.
+       Exactly one card of scroll per card. --n is written on from JS. */
+    .story-stage {
       position: relative;
+      height: calc(var(--n, 26) * (100vh - var(--nav-h)) + var(--nav-h));
+    }
+    .story-viewport {
+      position: sticky; top: var(--nav-h);
       height: calc(100vh - var(--nav-h));
-      scroll-margin-top: var(--nav-h);
+      overflow: hidden;
     }
+    /* svh does not move when a phone's URL bar hides, so the stage stops
+       resizing mid-scroll and the card maths stay put. */
     @supports (height: 100svh) {
-      .story-strip-wrap { height: calc(100svh - var(--nav-h)); }
+      .story-stage { height: calc(var(--n, 26) * (100svh - var(--nav-h)) + var(--nav-h)); }
+      .story-viewport { height: calc(100svh - var(--nav-h)); }
     }
-
-    .scene-strip {
-      height: 100%;
-      display: flex;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      /* keeps a sideways overscroll from triggering the browser's back gesture,
-         and stops the strip handing its scroll on to the page */
-      overscroll-behavior-x: contain;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .scene-strip::-webkit-scrollbar { display: none; }
 
     .s-card {
-      flex: 0 0 100%;
-      width: 100%;
-      height: 100%;
-      scroll-snap-align: center;
-      /* one scene per swipe, however hard the swipe */
-      scroll-snap-stop: always;
+      position: absolute; inset: 0;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: clamp(10px, 1.7vh, 22px);
       padding: clamp(14px, 2.4vh, 34px) clamp(18px, 3.5vw, 48px);
       text-align: center;
+      visibility: hidden;
+      transform: translate3d(100%, 0, 0);
+      backface-visibility: hidden;
     }
-
-    /* Step arrows, for anyone without a sideways gesture */
-    .strip-nav {
-      position: absolute; top: 50%; transform: translateY(-50%); z-index: 6;
-      width: 42px; height: 42px; border-radius: 50%;
-      border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--bg) 84%, transparent);
-      backdrop-filter: blur(6px);
-      color: var(--ink); font-size: 19px; line-height: 1;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background .2s, color .2s, opacity .2s;
-    }
-    .strip-nav:hover { background: var(--crimson); border-color: var(--crimson); color: var(--on-crimson); }
-    .strip-nav[disabled] { opacity: .28; cursor: default; }
-    .strip-nav[disabled]:hover { background: color-mix(in srgb, var(--bg) 84%, transparent); color: var(--ink); border-color: var(--line); }
-    .strip-nav.prev { left: clamp(8px, 1.4vw, 20px); }
-    .strip-nav.next { right: clamp(8px, 1.4vw, 20px); }
-    @media (max-width: 700px) { .strip-nav { display: none; } }
+    /* only the two or three cards in play are painted or promoted */
+    .s-card.live { visibility: visible; will-change: transform, opacity; }
 
     .s-eyebrow {
       flex: none;
@@ -189,8 +163,8 @@
       background: var(--bg); border-right: 1px solid var(--line);
       transform: translateX(-100%); transition: transform .35s cubic-bezier(.4,0,.2,1);
       overflow-y: auto; padding: 66px 14px 24px;
-      /* reaching either end of the drawer must not start scrolling the page
-         or the scenes underneath it */
+      /* reaching either end of the drawer must not carry on into the page and
+         start moving the scenes underneath it */
       overscroll-behavior: contain;
     }
     .scene-drawer.open { transform: none; }
@@ -279,11 +253,9 @@
       <div class="scroll-hint"><span>Scroll to begin</span><span class="arr">&darr;</span></div>
     </header>
 
-    <section class="story-strip-wrap" id="stripWrap">
-      <div class="scene-strip" id="sceneStrip" tabindex="0" aria-label="The scenes, scrolled sideways"></div>
-      <button class="strip-nav prev" id="stripPrev" type="button" aria-label="Previous scene">&#8249;</button>
-      <button class="strip-nav next" id="stripNext" type="button" aria-label="Next scene">&#8250;</button>
-    </section>
+    <div class="story-stage" id="storyStage">
+      <div class="story-viewport" id="storyViewport"></div>
+    </div>
 
     <!-- Colophon -->
     <section class="colophon">
@@ -309,10 +281,8 @@
     (function () {
       "use strict";
 
-      const strip = document.getElementById("sceneStrip");
-      const wrap = document.getElementById("stripWrap");
-      const prevBtn = document.getElementById("stripPrev");
-      const nextBtn = document.getElementById("stripNext");
+      const stage = document.getElementById("storyStage");
+      const viewport = document.getElementById("storyViewport");
       const fill = document.getElementById("progressFill");
       const counter = document.getElementById("storyCounter");
       const curEl = document.getElementById("curNum");
@@ -327,11 +297,11 @@
       // cards[]: every page of the book, register breaks included.
       // .scene is the 1-based scene number, or 0 for a register break.
       const cards = [];
+      let st = null;            // the one ScrollTrigger; single source of truth
       let lastIndex = -1;
       let hashScene = 0;
-      let programmatic = false;   // set while we drive the strip ourselves
-      let settleTimer = 0;
-      let ticking = false;
+      let programmatic = false; // set while we drive the scroll ourselves
+      let scrollTween = null;
 
       function sectionLabel(section) {
         const m = section.match(/Row (\d), Section (\d)/);
@@ -345,17 +315,18 @@
         .catch(err => {
           console.error("Failed to load scenes.json:", err);
           const p = document.createElement("p");
-          p.style.cssText = "margin:auto;text-align:center;color:var(--muted);padding:0 24px;";
+          p.style.cssText = "text-align:center;color:var(--muted);padding:120px 24px;";
           p.textContent = window.location.protocol === "file:"
             ? "This page was opened directly as a file. Double-click Start Website.command in the New Website folder, then visit http://localhost:8765/story.html."
             : "The scenes could not be loaded.";
-          strip.appendChild(p);
+          viewport.appendChild(p);
         });
 
       function build(scenes) {
         totEl.textContent = scenes.length;
         const frag = document.createDocumentFragment();
         let lastRow = "";
+
         scenes.forEach((s, i) => {
           const row = (s.section.match(/Row \d/) || [""])[0];
           if (row && row !== lastRow && REGISTERS[row]) {
@@ -364,16 +335,18 @@
           }
           frag.appendChild(makeScene(s, i + 1));
         });
-        strip.appendChild(frag);
+
+        viewport.appendChild(frag);
+        stage.style.setProperty("--n", cards.length);
         buildDrawer(scenes);
-        init();
+        initScroll();
       }
 
       function makeChapter(title) {
         const el = document.createElement("div");
         el.className = "s-card s-chapter";
         el.innerHTML = '<p class="orn">॥ ✽ ॥</p><h2>' + title + "</h2>";
-        cards.push({ el: el, scene: 0, img: null, src: "" });
+        cards.push({ el: el, scene: 0, img: null, src: "", live: false });
         return el;
       }
 
@@ -386,25 +359,24 @@
         el.innerHTML =
           '<p class="s-eyebrow">Scene ' + n + " · " + label + "</p>" +
           '<div class="s-plate">' +
-            // no src yet: images attach only near the current scene, so a phone
-            // never decodes twenty-three plates at once
+            // no src yet: images are attached only near the current card, so a
+            // phone never decodes twenty-three plates at once
             '<img decoding="async" alt="Scene ' + n + " of the painting: " + label + '">' +
           "</div>" +
           '<div class="s-caption">' +
             '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
             '<a class="s-ctx" href="explore.html#scene=' + s.id + '">View this scene in the full painting</a>' +
           "</div>";
-        cards.push({ el: el, scene: n, img: el.querySelector("img"), src: s.image });
+        cards.push({ el: el, scene: n, img: el.querySelector("img"), src: s.image, live: false });
         return el;
       }
 
-      /* ---- position <-> card, the one place the two are related ----
-         Every card is exactly one strip-width wide, so a card's scroll offset
-         is known from CSS alone, before any image has loaded. */
+      /* ---- the one place scroll position and card position are related ---- */
 
-      function cardWidth() { return strip.clientWidth || 1; }
-      function offsetFor(i) { return Math.round(i * cardWidth()); }
-      function indexNow() { return Math.round(strip.scrollLeft / cardWidth()); }
+      function scrollForCard(i) {
+        if (!st || cards.length < 2) return 0;
+        return st.start + (i / (cards.length - 1)) * (st.end - st.start);
+      }
 
       function cardForScene(n) {
         for (let i = 0; i < cards.length; i++) if (cards[i].scene === n) return i;
@@ -418,60 +390,86 @@
         }
       }
 
-      // Reads the strip's real position and brings everything else into line.
-      // Called straight after any jump, so the counter, the arrows and the URL
-      // never lag a frame behind where the strip actually is.
-      function syncState() {
-        const max = strip.scrollWidth - strip.clientWidth;
-        fill.style.width = (max > 0 ? (strip.scrollLeft / max) * 100 : 0) + "%";
-        const i = Math.max(0, Math.min(cards.length - 1, indexNow()));
-        if (i === lastIndex) return;
-        lastIndex = i;
-        attachImages(i);
-        prevBtn.disabled = i <= 0;
-        nextBtn.disabled = i >= cards.length - 1;
-        const scene = cards[i].scene;
-        if (scene) {
-          curEl.textContent = scene;
-          if (!programmatic && scene !== hashScene) {
-            hashScene = scene;
-            history.replaceState(null, "", "#scene-" + scene);
+      // t is a float card position: 4.35 means a third of the way from card 4 to 5
+      function render(t) {
+        const i = Math.floor(t);
+        const f = t - i;
+        for (let k = 0; k < cards.length; k++) {
+          const c = cards[k];
+          if (k < i - 1 || k > i + 2) {
+            if (c.live) { c.el.classList.remove("live"); c.live = false; }
+            continue;
+          }
+          if (!c.live) { c.el.classList.add("live"); c.live = true; }
+          let x, o;
+          if (k < i) { x = -100; o = 0; }
+          else if (k === i) { x = -f * 100; o = 1 - f * 0.7; }
+          else if (k === i + 1) { x = (1 - f) * 100; o = 0.3 + f * 0.7; }
+          else { x = 100; o = 0; }
+          c.el.style.transform = "translate3d(" + x + "%,0,0)";
+          c.el.style.opacity = o;
+        }
+
+        const index = Math.max(0, Math.min(cards.length - 1, Math.round(t)));
+        if (index !== lastIndex) {
+          lastIndex = index;
+          attachImages(index);
+          const scene = cards[index].scene;
+          if (scene) {
+            curEl.textContent = scene;
+            counter.classList.add("show");
+            if (!programmatic && scene !== hashScene) {
+              hashScene = scene;
+              history.replaceState(null, "", "#scene-" + scene);
+            }
+          } else {
+            counter.classList.remove("show");
+          }
+          const links = drawer.querySelectorAll("a");
+          for (let j = 0; j < links.length; j++) {
+            links[j].classList.toggle("current", +links[j].dataset.scene === scene);
           }
         }
-        const links = drawer.querySelectorAll("a");
-        for (let j = 0; j < links.length; j++) {
-          links[j].classList.toggle("current", +links[j].dataset.scene === scene);
-        }
-      }
-
-      function onStripScroll() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(function () {
-          ticking = false;
-          syncState();
-        });
       }
 
       function goToCard(i, animate) {
+        if (!st) return;
         i = Math.max(0, Math.min(cards.length - 1, i));
         attachImages(i);
+
+        const y = Math.round(scrollForCard(i));
         programmatic = true;
-        clearTimeout(settleTimer);
-        const smooth = animate && !reduceMotion;
-        strip.scrollTo({ left: offsetFor(i), behavior: smooth ? "smooth" : "instant" });
-        if (!smooth) syncState();
-        settleTimer = setTimeout(function () {
-          // land on the exact offset even if a snap or a gesture nudged it
-          strip.scrollTo({ left: offsetFor(i), behavior: "instant" });
+        if (scrollTween) { scrollTween.kill(); scrollTween = null; }
+
+        function land() {
+          // behavior:"instant" matters: site.css sets scroll-behavior:smooth on
+          // html, so a bare scrollTo(0,y) would quietly animate and could be
+          // interrupted. This must be an exact, immediate landing.
+          window.scrollTo({ top: y, behavior: "instant" });
+          scrollTween = null;
           programmatic = false;
-          syncState();
           const scene = cards[i].scene;
           if (scene) {
             hashScene = scene;
             history.replaceState(null, "", "#scene-" + scene);
           }
-        }, smooth ? 620 : 30);
+        }
+
+        // We never hand the travel to the browser's own smooth scrolling: that
+        // can be cancelled or interrupted mid-flight, which is how this used to
+        // stop on the wrong scene. We drive it ourselves and snap on landing.
+        if (!animate || reduceMotion || !window.gsap) {
+          land();
+          return;
+        }
+        const proxy = { y: window.scrollY };
+        scrollTween = gsap.to(proxy, {
+          y: y,
+          duration: 0.7,
+          ease: "power2.inOut",
+          onUpdate: function () { window.scrollTo({ top: proxy.y, behavior: "instant" }); },
+          onComplete: land
+        });
       }
 
       function goToScene(n, animate) {
@@ -479,92 +477,65 @@
         if (i >= 0) goToCard(i, animate);
       }
 
-      function init() {
-        strip.addEventListener("scroll", onStripScroll, { passive: true });
+      // any real scrolling gesture wins over an animation in progress
+      function cancelScrollTween() {
+        if (!scrollTween) return;
+        scrollTween.kill();
+        scrollTween = null;
+        programmatic = false;
+      }
 
-        prevBtn.addEventListener("click", function () { goToCard(indexNow() - 1, true); });
-        nextBtn.addEventListener("click", function () { goToCard(indexNow() + 1, true); });
+      function initScroll() {
+        if (!window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.config({ ignoreMobileResize: true });
 
-        // A vertical wheel is how most laptops scroll, so it turns the page
-        // sideways: one scene per gesture. At either end we stop intercepting
-        // and the page scrolls normally, so scrolling up from the first scene
-        // goes back to the title and down from the last reaches the colophon.
-        //
-        // Deliberately a discrete step rather than free scrolling. Switching
-        // scroll-snap off mid-gesture and back on afterwards makes the browser
-        // re-snap to the card it left, which silently undoes the gesture; with
-        // snap left on throughout, that cannot happen. A native sideways swipe
-        // still gets full one-to-one scrolling, untouched.
-        let accum = 0, cooling = false;
-        strip.addEventListener("wheel", function (e) {
-          if (e.ctrlKey) return;                                // pinch to zoom
-          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;  // a real sideways gesture
-          const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
-          const max = strip.scrollWidth - strip.clientWidth;
-          if ((dy < 0 && strip.scrollLeft <= 0.5) || (dy > 0 && strip.scrollLeft >= max - 0.5)) return;
-          e.preventDefault();
-          if (cooling) { accum = 0; return; }   // swallow the momentum tail
-          accum += dy;
-          if (Math.abs(accum) < 36) return;
-          const dir = accum > 0 ? 1 : -1;
-          accum = 0;
-          cooling = true;
-          setTimeout(function () { cooling = false; }, 380);
-          goToCard(indexNow() + dir, true);
-        }, { passive: false });
-
-        strip.addEventListener("keydown", function (e) {
-          if (e.metaKey || e.ctrlKey || e.altKey) return;
-          let step = 0;
-          if (e.key === "ArrowRight" || e.key === "PageDown") step = 1;
-          if (e.key === "ArrowLeft" || e.key === "PageUp") step = -1;
-          if (!step) return;
-          e.preventDefault();
-          goToCard(indexNow() + step, true);
+        st = ScrollTrigger.create({
+          trigger: stage,
+          start: "top top",
+          end: "bottom bottom",
+          onUpdate: function (self) {
+            fill.style.width = (self.progress * 100) + "%";
+            render(self.progress * (cards.length - 1));
+          },
+          onRefresh: function (self) {
+            render(self.progress * (cards.length - 1));
+          }
         });
 
-        // the counter only belongs on screen while the scenes are
-        if ("IntersectionObserver" in window) {
-          new IntersectionObserver(function (entries) {
-            counter.classList.toggle("show", entries[0].intersectionRatio > 0.5);
-          }, { threshold: [0, 0.5, 1] }).observe(wrap);
-        } else {
-          counter.classList.add("show");
-        }
-
-        lastIndex = -1;
-        syncState();
+        // The cards are absolutely positioned and the stage height is pure CSS,
+        // so nothing above can move: st.start and st.end are correct as soon as
+        // the trigger exists. That is why the deep link needs no timeout.
+        ScrollTrigger.refresh();
+        render(0);
 
         const m = window.location.hash.match(/scene-(\d+)/);
         if (m) {
           hashScene = +m[1];
-          const i = cardForScene(hashScene);
-          if (i >= 0) {
-            strip.scrollTo({ left: offsetFor(i), behavior: "instant" });
-            wrap.scrollIntoView({ behavior: "instant", block: "start" });
-            syncState();
-          }
+          goToScene(hashScene, false);
         }
 
-        // a resize changes the card width, so hold the current scene in place
-        let rTimer = 0;
-        addEventListener("resize", function () {
-          clearTimeout(rTimer);
-          const keep = lastIndex;
-          rTimer = setTimeout(function () {
-            strip.scrollTo({ left: offsetFor(keep), behavior: "instant" });
-          }, 150);
+        addEventListener("wheel", cancelScrollTween, { passive: true });
+        addEventListener("touchstart", cancelScrollTween, { passive: true });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.metaKey || e.ctrlKey || e.altKey) return;
+          let step = 0;
+          if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "PageDown") step = 1;
+          if (e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "PageUp") step = -1;
+          if (!step) return;
+          const inStage = scrollY >= st.start - 4 && scrollY <= st.end + 4;
+          if (!inStage) return;
+          e.preventDefault();
+          goToCard(lastIndex + step, true);
         });
 
-        if (!reduceMotion && window.gsap) {
+        if (!reduceMotion) {
           gsap.from("#cover > *", { autoAlpha: 0, y: 24, stagger: 0.09, duration: 0.8, ease: "power2.out" });
-          if (window.ScrollTrigger) {
-            gsap.registerPlugin(ScrollTrigger);
-            gsap.from(".colophon > *", {
-              autoAlpha: 0, y: 24, stagger: 0.08, duration: 0.7, ease: "power2.out",
-              scrollTrigger: { trigger: ".colophon", start: "top 82%", once: true }
-            });
-          }
+          gsap.from(".colophon > *", {
+            autoAlpha: 0, y: 24, stagger: 0.08, duration: 0.7, ease: "power2.out",
+            scrollTrigger: { trigger: ".colophon", start: "top 78%", once: true }
+          });
         }
       }
 
@@ -584,10 +555,11 @@
           a.dataset.scene = i + 1;
           a.innerHTML = '<img loading="lazy" src="scene-thumbs/' + s.id + '.jpg" alt=""><span>Scene ' + (i + 1) + "</span>";
           a.addEventListener("click", function (e) {
-            // never let the browser do the fragment jump; we scroll the strip
+            // Never let the browser do the fragment jump. Its smooth scroll can
+            // be cancelled mid-flight, which is exactly how this used to land on
+            // the wrong scene. We scroll to a computed offset instead.
             e.preventDefault();
             closeDrawer();
-            wrap.scrollIntoView({ behavior: reduceMotion ? "instant" : "smooth", block: "start" });
             goToScene(i + 1, true);
           });
           drawer.appendChild(a);
@@ -624,6 +596,7 @@
         }
       };
 
+      // Arriving at #scene-N from another page while already on this page
       window.addEventListener("hashchange", function () {
         if (programmatic) return;
         const m = window.location.hash.match(/scene-(\d+)/);
