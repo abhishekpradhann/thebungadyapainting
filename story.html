@@ -110,14 +110,32 @@
       -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 62%, rgba(0,0,0,.55) 82%, transparent 97%);
       mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 62%, rgba(0,0,0,.55) 82%, transparent 97%);
     }
-    .s-caption { flex: none; max-width: 620px; }
+    /* The story itself. Set to be read, not skimmed: roman rather than italic,
+       a measure that stops well short of the full card, and room to breathe. */
+    .s-caption { flex: none; max-width: 66ch; }
     .s-caption .s-text {
-      font-family: var(--font-display); font-style: italic; font-weight: 400;
-      font-size: clamp(16px, 1.6vw, 20px); line-height: 1.55; color: var(--ink);
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(17px, 1.35vw, 20px);
+      line-height: 1.62;
+      color: var(--ink);
+      text-wrap: pretty;
+      /* Left-aligned so the eye always knows where the next line starts, but
+         fit-content keeps a one-line scene visually centred on the card. */
+      text-align: left;
+      width: fit-content;
+      max-width: 100%;
+      margin-inline: auto;
     }
     .s-caption .s-text.empty { display: none; }
+    /* The bracketed asides: quieter and smaller than the story they qualify. */
+    .s-caption .s-note {
+      margin-top: 9px;
+      font-family: var(--font-body); font-size: 12.5px; line-height: 1.5;
+      color: var(--faint);
+      max-width: 58ch; margin-inline: auto;
+    }
     .s-caption .s-ctx {
-      display: inline-block; margin-top: 8px; font-size: 12.5px; color: var(--faint);
+      display: inline-block; margin-top: 12px; font-size: 12.5px; color: var(--faint);
       text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px;
     }
     .s-caption .s-ctx:hover { color: var(--crimson); border-color: var(--crimson); }
@@ -135,14 +153,9 @@
     }
     .colophon .orn { color: var(--crimson); font-size: 20px; letter-spacing: .5em; margin-bottom: 24px; }
     .colophon h2 { font-size: clamp(30px, 4.4vw, 52px); max-width: 16ch; font-weight: 500; }
-    .colophon p { color: var(--muted); max-width: 480px; margin-top: 18px; }
-    .colophon .ways { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 34px; }
-    .colophon .ways a {
-      font-size: 14px; text-decoration: none; color: var(--ink);
-      border: 1px solid var(--line); border-radius: 999px; padding: 10px 22px;
-      transition: all .25s;
-    }
-    .colophon .ways a:hover { background: var(--crimson); border-color: var(--crimson); color: var(--on-crimson); }
+    .colophon p { color: var(--muted); max-width: 560px; margin-top: 18px; }
+    /* the pager is a grid, so inside this centred column it needs a width */
+    .colophon .pager { width: min(100%, 760px); text-align: left; }
 
     /* ---- Scene drawer (jump to any scene) ---- */
     .drawer-tab {
@@ -216,7 +229,6 @@
           <li><a href="faq.html">FAQ with a Local<span class="drop-note">A conversation with Siddhartha Guvaju</span></a></li>
         </ul>
       </li>
-      <li><a href="gallery.html">Gallery</a></li>
       <li><a href="about.html">About</a></li>
     </ul>
     <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
@@ -235,7 +247,6 @@
       <a href="iconography.html">Reading the Painting</a>
       <a href="faq.html">FAQ with a Local</a>
     </div>
-    <div class="group"><a href="gallery.html">Gallery</a></div>
     <div class="group"><a href="about.html">About</a></div>
   </div>
 
@@ -260,13 +271,18 @@
     <!-- Colophon -->
     <section class="colophon">
       <p class="orn">॥ ✽ ॥</p>
-      <h2>The story does not end on cloth</h2>
-      <p>Each year the chariot is built anew, and Bunga Dyo rides through the valley once more. The painting is one telling of a story that is still being told.</p>
-      <div class="ways">
-        <a href="legend.html">Read the full legend</a>
-        <a href="explore.html">Zoom into the painting</a>
-        <a href="iconography.html">Read the inscriptions</a>
-      </div>
+      <h2>The story doesn&rsquo;t end here</h2>
+      <p>Every year, the chariot is built anew, and Bunga Dyo rides through the valley once more. Parts of the painting are inferred with expert guidance but may be inaccurate.</p>
+      <nav class="pager" aria-label="Continue">
+        <a href="explore.html">
+          <span class="plabel">&larr; Back</span>
+          <span class="ptitle">Zoom into the full painting</span>
+        </a>
+        <a href="legend.html">
+          <span class="plabel">Next</span>
+          <span class="ptitle">Read the legend &rarr;</span>
+        </a>
+      </nav>
     </section>
 
   </main>
@@ -302,6 +318,16 @@
       let hashScene = 0;
       let programmatic = false; // set while we drive the scroll ourselves
       let scrollTween = null;
+      let onScene = false;      // a scene card, rather than a register break
+
+      // The counter belongs on screen only while a scene is, so it does not
+      // linger over the cover or the closing page. The range is measured with a
+      // little slack because the last scene sits exactly on the trigger's end,
+      // where ScrollTrigger already counts itself inactive.
+      function showCounter() {
+        const inStage = !!st && window.scrollY >= st.start - 2 && window.scrollY <= st.end + 2;
+        counter.classList.toggle("show", onScene && inStage);
+      }
 
       function sectionLabel(section) {
         const m = section.match(/Row (\d), Section (\d)/);
@@ -365,6 +391,7 @@
           "</div>" +
           '<div class="s-caption">' +
             '<p class="s-text' + (hasText ? "" : " empty") + '">' + (hasText ? s.background : "") + "</p>" +
+            (s.note ? '<p class="s-note">' + s.note + "</p>" : "") +
             '<a class="s-ctx" href="explore.html#scene=' + s.id + '">View this scene in the full painting</a>' +
           "</div>";
         cards.push({ el: el, scene: n, img: el.querySelector("img"), src: s.image, live: false });
@@ -415,15 +442,14 @@
           lastIndex = index;
           attachImages(index);
           const scene = cards[index].scene;
+          onScene = !!scene;
+          showCounter();
           if (scene) {
             curEl.textContent = scene;
-            counter.classList.add("show");
             if (!programmatic && scene !== hashScene) {
               hashScene = scene;
               history.replaceState(null, "", "#scene-" + scene);
             }
-          } else {
-            counter.classList.remove("show");
           }
           const links = drawer.querySelectorAll("a");
           for (let j = 0; j < links.length; j++) {
@@ -517,6 +543,11 @@
 
         addEventListener("wheel", cancelScrollTween, { passive: true });
         addEventListener("touchstart", cancelScrollTween, { passive: true });
+
+        // Driven straight off the scroll rather than off the trigger's own
+        // tick, so the counter leaves with the scenes even when the page moves
+        // past the stage in one jump. Two comparisons and a class toggle.
+        addEventListener("scroll", showCounter, { passive: true });
 
         document.addEventListener("keydown", function (e) {
           if (e.metaKey || e.ctrlKey || e.altKey) return;

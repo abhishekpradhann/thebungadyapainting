@@ -46,7 +46,6 @@
           <li><a href="faq.html">FAQ with a Local<span class="drop-note">A conversation with Siddhartha Guvaju</span></a></li>
         </ul>
       </li>
-      <li><a href="gallery.html">Gallery</a></li>
       <li><a href="about.html" class="active">About</a></li>
     </ul>
     <button class="nav-burger" aria-label="Menu" aria-expanded="false"><span></span></button>
@@ -65,7 +64,6 @@
       <a href="iconography.html">Reading the Painting</a>
       <a href="faq.html">FAQ with a Local</a>
     </div>
-    <div class="group"><a href="gallery.html">Gallery</a></div>
     <div class="group"><a href="about.html" class="active">About</a></div>
   </div>
 
@@ -143,8 +141,24 @@
         <h2>Acknowledgements</h2>
         <p class="placeholder-note">Gratitude to the people and institutions who made this project possible will appear here.</p>
       </section>
+
+      <section class="block" id="gallery" data-reveal>
+        <h2>Gallery</h2>
+        <p class="subtitle" style="margin:4px 0 12px">The festival and its people, in photographs</p>
+        <p style="color:var(--muted)">Bunga Dyo&rsquo;s story does not end on cloth. These photographs follow the deity into the present: the chariot, the crowds, and the valley that still gathers for him each year.</p>
+        <div class="masonry" id="masonry" style="margin-top:22px"></div>
+        <div class="gallery-empty" id="galleryEmpty" hidden>Photographs from the festival are being added.</div>
+      </section>
     </div>
   </main>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged photograph">
+    <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+    <div>
+      <img id="lbImg" alt="">
+      <p class="lb-caption" id="lbCaption"></p>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="footer-inner">
@@ -154,7 +168,7 @@
           <div class="flabel">Explore</div>
           <a href="explore.html">Full View</a>
           <a href="story.html">Story Mode</a>
-          <a href="gallery.html">Gallery</a>
+          <a href="about.html#gallery">Gallery</a>
         </div>
         <div class="footer-col">
           <div class="flabel">Deep Dive</div>
@@ -212,6 +226,57 @@
       document.addEventListener('keydown', function(e){
         if (e.key === 'Escape' && wrap.classList.contains('cmp-focus')) exitFocus();
       });
+    })();
+
+    // Gallery: photos are listed in gallery.json:
+    //   [{ "src": "gallery/photo.jpg", "caption": "Optional caption" }, ...]
+    (function () {
+      "use strict";
+
+      const masonry = document.getElementById("masonry");
+      const empty = document.getElementById("galleryEmpty");
+      const lightbox = document.getElementById("lightbox");
+      const lbImg = document.getElementById("lbImg");
+      const lbCaption = document.getElementById("lbCaption");
+
+      function openLightbox(src, caption) {
+        lbImg.src = src;
+        lbCaption.textContent = caption || "";
+        lightbox.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      lightbox.addEventListener("click", closeLightbox);
+      document.getElementById("lbClose").addEventListener("click", closeLightbox);
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
+
+      fetch("gallery.json")
+        .then(r => r.json())
+        .then(photos => {
+          if (!photos.length) { empty.hidden = false; return; }
+          photos.forEach(p => {
+            const fig = document.createElement("figure");
+            const img = document.createElement("img");
+            img.src = p.src;
+            img.alt = p.caption || "Festival photograph";
+            img.loading = "lazy";
+            fig.appendChild(img);
+            if (p.caption) {
+              const cap = document.createElement("figcaption");
+              cap.className = "caption";
+              cap.textContent = p.caption;
+              fig.appendChild(cap);
+            }
+            img.addEventListener("click", () => openLightbox(p.src, p.caption));
+            masonry.appendChild(fig);
+          });
+        })
+        .catch(() => { empty.hidden = false; });
     })();
   </script>
 </body>

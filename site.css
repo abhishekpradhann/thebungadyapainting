@@ -1132,13 +1132,15 @@ table.chart td { color: var(--muted); }
 .qa h3 { margin: 0; font-size: clamp(19px, 2vw, 23px); }
 .qa p { color: var(--muted); }
 
-/* Gallery (masonry) */
+/* Gallery (masonry), the closing section of About */
+/* linked to from the footers as about.html#gallery, so it has to clear the nav */
+#gallery { scroll-margin-top: calc(var(--nav-h) + 24px); }
+
 .masonry {
-  columns: 3;
+  columns: 2;
   column-gap: 22px;
 }
 
-@media (max-width: 980px) { .masonry { columns: 2; } }
 @media (max-width: 600px) { .masonry { columns: 1; } }
 
 .masonry figure {
