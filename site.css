@@ -1132,113 +1132,6 @@ table.chart td { color: var(--muted); }
 .qa h3 { margin: 0; font-size: clamp(19px, 2vw, 23px); }
 .qa p { color: var(--muted); }
 
-/* Gallery (masonry), the closing section of About */
-/* linked to from the footers as about.html#gallery, so it has to clear the nav */
-#gallery { scroll-margin-top: calc(var(--nav-h) + 24px); }
-
-.masonry {
-  columns: 2;
-  column-gap: 22px;
-}
-
-@media (max-width: 600px) { .masonry { columns: 1; } }
-
-.masonry figure {
-  break-inside: avoid;
-  margin: 0 0 22px;
-}
-
-.masonry img {
-  width: 100%;
-  cursor: zoom-in;
-  transition: opacity 0.2s ease;
-}
-
-.masonry figure:hover img { opacity: 0.9; }
-.masonry figcaption { margin-top: 8px; }
-
-.gallery-empty {
-  border: 1px dashed var(--line);
-  background: var(--bg-raise);
-  padding: clamp(40px, 6vw, 80px);
-  text-align: center;
-  color: var(--faint);
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 15px;
-}
-
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba(16, 13, 10, 0.95);
-  display: none;
-  place-items: center;
-  padding: clamp(16px, 4vw, 48px);
-  cursor: zoom-out;
-}
-
-.lightbox.open { display: grid; }
-
-.lightbox img { max-width: 100%; max-height: 82vh; margin: 0 auto; display: block; }
-
-.lightbox .lb-caption {
-  text-align: center;
-  color: #bdb4a7;
-  margin-top: 14px;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 15px;
-}
-
-.lightbox .lb-close {
-  position: absolute;
-  top: 16px;
-  right: 22px;
-  background: none;
-  border: 0;
-  color: #e9e2d6;
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-/* Article pager */
-.pager {
-  margin-top: clamp(40px, 6vw, 72px);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--line);
-}
-
-.pager a {
-  padding: 26px 6px;
-  text-decoration: none;
-  display: grid;
-  gap: 6px;
-}
-
-.pager a:last-child { text-align: right; border-left: 1px solid var(--hairline); }
-.pager a:first-child:last-child { border-left: 0; }
-.pager .plabel { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--faint); }
-.pager .ptitle { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
-.pager a:hover .ptitle { color: var(--crimson); }
-
-/* Bio cards */
-.bio-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(28px, 4vw, 56px) clamp(28px, 4vw, 64px);
-}
-
-@media (max-width: 720px) { .bio-grid { grid-template-columns: 1fr; } }
-
-.bio { border-top: 1px solid var(--ink); padding-top: 18px; }
-.bio .role { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--crimson); font-weight: 500; }
-.bio h3 { font-size: 24px; margin: 8px 0 10px; }
-.bio p { color: var(--muted); font-size: 15px; }
-
 /* ===========================================================================
    Explore — Full View (light)
    ========================================================================== */
@@ -1258,6 +1151,181 @@ table.chart td { color: var(--muted); }
   color: #9d948a;
   letter-spacing: 0.04em;
   pointer-events: none;
+}
+
+/* People: one per row, portrait alongside the text, as on the FAQ page */
+.people { display: grid; gap: clamp(34px, 4.5vw, 56px); margin-top: 28px; }
+
+.person {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: clamp(22px, 3vw, 38px);
+  align-items: start;
+  border-top: 1px solid var(--ink);
+  padding-top: 20px;
+}
+
+.person figure { margin: 0; }
+
+.person img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.person-text .role {
+  font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--crimson); font-weight: 500;
+}
+.person-text h3 { font-size: 25px; margin: 7px 0 12px; }
+.person-text p { color: var(--muted); font-size: 15px; max-width: 62ch; }
+.person-text p + p { margin-top: 12px; }
+
+@media (max-width: 640px) {
+  .person { grid-template-columns: 1fr; gap: 18px; }
+  .person figure { max-width: 220px; }
+}
+
+/* ===========================================================================
+   Gallery: a masonry wall that opens into a full-screen viewer
+   ========================================================================== */
+
+/* linked to from the footers as about.html#gallery, so it has to clear the nav */
+#gallery { scroll-margin-top: calc(var(--nav-h) + 24px); }
+
+.masonry { columns: 3; column-gap: 14px; }
+@media (max-width: 900px) { .masonry { columns: 2; } }
+@media (max-width: 520px) { .masonry { columns: 2; column-gap: 10px; } }
+
+.masonry figure {
+  break-inside: avoid;
+  margin: 0 0 14px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-raise);
+}
+
+.masonry button {
+  display: block; width: 100%; padding: 0; border: 0; background: none;
+  cursor: zoom-in; line-height: 0;
+}
+
+.masonry img {
+  width: 100%; height: auto; display: block;
+  transition: transform 0.45s cubic-bezier(.2,.6,.2,1), filter 0.3s ease;
+}
+
+.masonry button:hover img { transform: scale(1.035); filter: brightness(0.94); }
+.masonry button:focus-visible { outline: 2px solid var(--crimson); outline-offset: 2px; }
+.masonry figcaption { margin-top: 8px; }
+
+.gallery-empty {
+  border: 1px dashed var(--line);
+  background: var(--bg-raise);
+  padding: clamp(40px, 6vw, 80px);
+  text-align: center;
+  color: var(--faint);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+}
+
+/* ---- The viewer: the photo centred, everything else dimmed away ---- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(12, 10, 8, 0.94);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(48px, 7vh, 84px) clamp(14px, 5vw, 76px);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.lightbox.open { display: flex; }
+.lightbox.shown { opacity: 1; }
+
+.lightbox figure {
+  margin: 0;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.985);
+  transition: transform 0.22s ease;
+}
+.lightbox.shown figure { transform: none; }
+
+.lightbox img {
+  max-width: 100%;
+  max-height: calc(100vh - clamp(120px, 18vh, 190px));
+  width: auto; height: auto;
+  display: block;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.lightbox .lb-caption {
+  text-align: center;
+  color: rgba(233, 226, 214, 0.72);
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14.5px;
+  max-width: 62ch;
+}
+.lightbox .lb-caption:empty { display: none; }
+
+/* controls: quiet until you want them */
+.lightbox button {
+  position: fixed;
+  border: 1px solid rgba(233, 226, 214, 0.26);
+  background: rgba(20, 17, 14, 0.5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: #f2ecdf;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+.lightbox button:hover { background: #f2ecdf; color: #14110e; border-color: #f2ecdf; }
+.lightbox button[disabled] { opacity: 0.25; cursor: default; }
+.lightbox button[disabled]:hover { background: rgba(20, 17, 14, 0.5); color: #f2ecdf; border-color: rgba(233, 226, 214, 0.26); }
+
+.lightbox .lb-close {
+  top: clamp(14px, 2.4vh, 26px); right: clamp(14px, 2.4vw, 30px);
+  width: 42px; height: 42px; font-size: 21px; line-height: 1;
+}
+.lightbox .lb-prev, .lightbox .lb-next {
+  top: 50%; transform: translateY(-50%);
+  width: 46px; height: 46px; font-size: 22px; line-height: 1;
+}
+.lightbox .lb-prev { left: clamp(10px, 2vw, 26px); }
+.lightbox .lb-next { right: clamp(10px, 2vw, 26px); }
+
+.lightbox .lb-count {
+  position: fixed;
+  bottom: clamp(14px, 2.4vh, 26px); left: 50%; transform: translateX(-50%);
+  color: rgba(233, 226, 214, 0.6);
+  font-size: 12.5px; letter-spacing: 0.14em;
+}
+
+@media (max-width: 560px) {
+  .lightbox .lb-prev, .lightbox .lb-next { width: 38px; height: 38px; font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox, .lightbox figure { transition: none; }
+  .masonry img { transition: none; }
+  .masonry button:hover img { transform: none; }
 }
 
 /* ===========================================================================

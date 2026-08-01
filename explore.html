@@ -75,7 +75,9 @@
     const viewer = OpenSeadragon({
       id: "viewer",
       prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
-      tileSources: "tiles/painting.dzi",
+      tileSources: { Image: { xmlns: "http://schemas.microsoft.com/deepzoom/2008",
+        Url: "tiles/painting_files/", Format: "jpg", Overlap: "1", TileSize: "256",
+        Size: { Width: "10432", Height: "2683" } } },
       showNavigator: false,
       showNavigationControl: false,
       zoomPerScroll: 1.12,
