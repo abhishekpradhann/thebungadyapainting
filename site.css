@@ -1132,6 +1132,27 @@ table.chart td { color: var(--muted); }
 .qa h3 { margin: 0; font-size: clamp(19px, 2vw, 23px); }
 .qa p { color: var(--muted); }
 
+/* Article pager (bottom of legend, iconography, faq, and Story Mode) */
+.pager {
+  margin-top: clamp(40px, 6vw, 72px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+
+.pager a {
+  padding: 26px 6px;
+  text-decoration: none;
+  display: grid;
+  gap: 6px;
+}
+
+.pager a:last-child { text-align: right; border-left: 1px solid var(--hairline); }
+.pager a:first-child:last-child { border-left: 0; }
+.pager .plabel { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--faint); }
+.pager .ptitle { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+.pager a:hover .ptitle { color: var(--crimson); }
+
 /* ===========================================================================
    Explore — Full View (light)
    ========================================================================== */
