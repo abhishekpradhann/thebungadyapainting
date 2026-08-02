@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abhishekpradhann.github.io/thebungadyapainting/sitemap.xml
+Sitemap: https://abhishekpradhann.github.io/thebungadyopainting/sitemap.xml
